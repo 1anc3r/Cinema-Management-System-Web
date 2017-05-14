@@ -1,0 +1,100 @@
+<%@ page language="java" import="java.util.*"
+	contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ page import="me.lancer.cms.model.*"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>1anc3r影院管理系统主页</title>
+<jsp:useBean id="EmployeeSrv" scope="page"
+	class="me.lancer.cms.service.EmployeeSrv"></jsp:useBean>
+</head>
+<body style="background-color:#FEFEFE">
+	<%
+		int intCurPage = 1;
+		int pageSize = 5;
+		int itemCount = EmployeeSrv.FetchAll().size();
+		int pageCount = (itemCount % pageSize == 0) ? (itemCount / pageSize) : (itemCount / pageSize + 1);
+		String strCurPage = request.getParameter("currentPage");
+		if(strCurPage!=null){
+			intCurPage = Integer.parseInt(strCurPage);
+		}
+		List<Employee> empList = EmployeeSrv.FetchByPage(pageSize * (intCurPage - 1), pageSize);
+	%>
+<style type="text/css">
+table.hovertable {
+	font-family: verdana,arial,sans-serif;
+	font-size:18px;
+	color:#333333;
+	border-width: 1px;
+	border-color: #999999;
+	border-collapse: collapse;
+}
+table.hovertable th {
+	background-color:#c3dde0;
+	border-width: 1px;
+	padding: 8px;
+	border-style: solid;
+	border-color: #a9c6c9;
+}
+table.hovertable tr {
+	background-color:#d4e3e5;
+	font-size:18px;
+}
+table.hovertable td {
+	border-width: 1px;
+	padding: 8px;
+	border-style: solid;
+	border-color: #a9c6c9;
+	font-size:18px;
+}
+</style>
+	<table border="1" cellspacing="0" cellpadding="0" class="hovertable" width=100%
+		align="center">
+		<tr align="center">
+			<th colspan="11">员工列表</th>
+		</tr>
+		<tr>
+			<td>员工id</td>
+			<td>员工权限</td>
+			<td>员工工号</td>
+			<td>员工名字</td>
+			<td>员工住址</td>
+			<td>员工电话</td>
+			<td>员工email</td>
+			<td>员工头像</td>
+		</tr>
+		<%
+			for (int i = 0; i < empList.size(); i++) {
+		%>
+		<tr onmouseover="this.style.backgroundColor='#ffff66';" onmouseout="this.style.backgroundColor='#d4e3e5';">
+			<td><%=empList.get(i).getId()%></td>
+			<td><%=empList.get(i).getAccess()%></td>
+			<td><%=empList.get(i).getNo()%></td>
+			<td><%=empList.get(i).getName()%></td>
+			<td><%=empList.get(i).getAddr()%></td>
+			<td><%=empList.get(i).getTel()%></td>
+			<td><%=empList.get(i).getEmail()%></td>
+			<td><img src="<%=empList.get(i).getImage()%>" width="36px" height="36px"></td>
+		</tr>
+		<%
+			}
+				if (empList.size() == 0) {
+		%>
+		<tr onmouseover="this.style.backgroundColor='#ffff66';" onmouseout="this.style.backgroundColor='#d4e3e5';">
+			<th colspan="11">无员工信息！</th>
+		</tr>
+		<%
+			}
+		%>
+	</table>
+	<div align="center">
+	<a href="employee_list.jsp?currentPage=1">首页</a>
+	<a
+		href="employee_list.jsp?currentPage=<%=(intCurPage - 1 < 1) ? 1 : (intCurPage - 1)%>">上一页</a>
+	<a
+		href="employee_list.jsp?currentPage=<%=(intCurPage + 1 > pageCount) ? pageCount : (intCurPage + 1)%>">下一页</a>
+	<a href="employee_list.jsp?currentPage=<%=pageCount%>">尾页</a> 第<%=intCurPage%>页/共<%=pageCount%>页
+	</div>
+</body>
+</html>

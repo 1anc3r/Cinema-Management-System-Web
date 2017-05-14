@@ -34,4 +34,8 @@ public class EmployeeSrv {
 	public List<Employee> Fetch_(Map<String, String> map) {
 		return empDAO.select_(map);
 	}
+	
+	public List<Employee> FetchByPage(int start, int size) {
+		return empDAO.select("limit "+start+","+size);
+	}
 }

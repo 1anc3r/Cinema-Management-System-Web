@@ -6,6 +6,7 @@ import java.util.Map;
 import me.lancer.cms.idao.DAOFactory;
 import me.lancer.cms.idao.iSeatDAO;
 import me.lancer.cms.model.Seat;
+import me.lancer.cms.model.Studio;
 
 public class SeatSrv {
 	
@@ -33,5 +34,9 @@ public class SeatSrv {
 	
 	public List<Seat> Fetch_(Map<String, String> map){
 		return seatDAO.select_(map);		
+	}
+
+	public List<Seat> FetchByPage(int start, int size) {
+		return seatDAO.select("limit "+start+","+size);
 	}
 }

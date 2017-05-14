@@ -74,8 +74,11 @@ public class SeatDAO implements iSeatDAO {
 		try {
 			String sqlstr = "select * from seat ";
 			condt.trim();
-			if (!condt.isEmpty())
+			if (!condt.isEmpty() && !condt.contains("limit")) {
 				sqlstr += " where " + condt;
+			} else {
+				sqlstr += condt;
+			}
 			DBUtil db = new DBUtil();
 			if (!db.openConnection()) {
 				return null;

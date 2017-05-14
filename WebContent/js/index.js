@@ -44,7 +44,7 @@ var clickHandlevar = {
 	    form.action = url; 
 	    form.method = "post"; 
 	    var inputUserName = document.createElement("input");
-	    inputUserName.setAttribute("name", "user_name") ; 
+	    inputUserName.setAttribute("name", "username") ; 
 	    inputUserName.setAttribute("value", this.useElement.inputUsername[0].value); 
 	    form.appendChild(inputUserName) ; 
 	    var inputPassWord = document.createElement("input");

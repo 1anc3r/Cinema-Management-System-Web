@@ -7,7 +7,7 @@ public class Play {
 	private int langId;
 	private String name;
 	private String introduction;
-	private byte[] image;
+	private String image;
 	private int length;
 	private float price;
 	private int status;
@@ -15,7 +15,7 @@ public class Play {
 	public Play() {
 	}
 
-	public Play(int id, int typeId, int langId, String name, String introduction, byte[] image, int length, float price,
+	public Play(int id, int typeId, int langId, String name, String introduction, String image, int length, float price,
 			int status) {
 		super();
 		this.id = id;
@@ -69,11 +69,11 @@ public class Play {
 		this.introduction = introduction;
 	}
 
-	public byte[] getImage() {
+	public String getImage() {
 		return image;
 	}
 
-	public void setImage(byte[] image) {
+	public void setImage(String image) {
 		this.image = image;
 	}
 

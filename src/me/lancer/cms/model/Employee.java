@@ -9,12 +9,13 @@ public class Employee {
 	private String addr;
 	private String tel;
 	private String email;
+	private String image;
 	private int no;
 
 	public Employee() {
 	}
 
-	public Employee(int access, int id, String name, String password, int no, String tel, String email, String addr) {
+	public Employee(int access, int id, String name, String password, int no, String tel, String email, String addr, String image) {
 		this.access = access;
 		this.id = id;
 		this.name = name;
@@ -23,6 +24,7 @@ public class Employee {
 		this.tel = tel;
 		this.email = email;
 		this.addr = addr;
+		this.setImage(image);
 	}
 
 	public int getAccess() {
@@ -91,6 +93,14 @@ public class Employee {
 
 	public void setNo(int no) {
 		this.no = no;
+	}
+
+	public String getImage() {
+		return image;
+	}
+
+	public void setImage(String image) {
+		this.image = image;
 	}
 
 }

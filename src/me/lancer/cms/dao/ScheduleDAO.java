@@ -74,8 +74,11 @@ public class ScheduleDAO implements iScheduleDAO {
 		try {
 			String sqlstr = "select sched_id, studio_id, play_id, sched_time, sched_ticket_price from schedule ";
 			condt.trim();
-			if (!condt.isEmpty())
+			if (!condt.isEmpty() && !condt.contains("limit")) {
 				sqlstr += " where " + condt;
+			} else {
+				sqlstr += condt;
+			}
 			DBUtil db = new DBUtil();
 			if (!db.openConnection()) {
 				return null;

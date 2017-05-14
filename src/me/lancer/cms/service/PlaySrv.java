@@ -6,6 +6,7 @@ import java.util.Map;
 import me.lancer.cms.idao.DAOFactory;
 import me.lancer.cms.idao.iPlayDAO;
 import me.lancer.cms.model.Play;
+import me.lancer.cms.model.Studio;
 
 public class PlaySrv {
 	
@@ -37,5 +38,9 @@ public class PlaySrv {
 	
 	public List<Play> Fetch_(Map<String, String> map){
 		return plyDAO.select_(map);		
+	}
+
+	public List<Play> FetchByPage(int start, int size) {
+		return plyDAO.select("limit "+start+","+size);
 	}
 }

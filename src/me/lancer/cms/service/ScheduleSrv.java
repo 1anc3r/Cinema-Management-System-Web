@@ -5,6 +5,7 @@ import java.util.Map;
 
 import me.lancer.cms.idao.DAOFactory;
 import me.lancer.cms.idao.iScheduleDAO;
+import me.lancer.cms.model.Play;
 import me.lancer.cms.model.Schedule;
 
 public class ScheduleSrv {
@@ -33,5 +34,9 @@ public class ScheduleSrv {
 	
 	public List<Schedule> Fetch_(Map<String, String> map) {
 		return schedDAO.select_(map);
+	}
+
+	public List<Schedule> FetchByPage(int start, int size) {
+		return schedDAO.select("limit "+start+","+size);
 	}
 }

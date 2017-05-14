@@ -64,10 +64,10 @@ public class SeatSlt extends HttpServlet {
 		if (seatList.size() > 0) {
 			request.setAttribute("error", null);
 			request.setAttribute("list", seatList);
-			request.getRequestDispatcher("seat_fetch.jsp").forward(request, response);
+			request.getRequestDispatcher("/main/seat/seat_list.jsp").forward(request, response);
 		} else {
 			request.setAttribute("error", "未找到符合条件的座位!");
-			request.getRequestDispatcher("seat_fetch.jsp").forward(request, response);
+			request.getRequestDispatcher("/main/seat/seat_list.jsp").forward(request, response);
 		}
 	}
 
@@ -79,8 +79,23 @@ public class SeatSlt extends HttpServlet {
 		String seatCol = request.getParameter("col");
 		String seatStatus = request.getParameter("status");
 		Seat seat = new Seat();
-		seat.setId(Integer.parseInt(seatId));
-		List<Seat> rst = new SeatSrv().Fetch(" seat_id=" + seatId);
+		Map<String, String> map = new HashMap<String, String>();
+		if (seatId != null && !seatId.equals("")) {
+			map.put("id", seatId);
+		}
+		if (seatStudId != null && !seatStudId.equals("")) {
+			map.put("studid", seatStudId);
+		}
+		if (seatRow != null && !seatRow.equals("")) {
+			map.put("row", seatRow);
+		}
+		if (seatCol != null && !seatCol.equals("")) {
+			map.put("col", seatCol);
+		}
+		if (seatStatus != null && !seatStatus.equals("")) {
+			map.put("status", seatStatus);
+		}
+		List<Seat> rst = new SeatSrv().Fetch_(map);
 		if (rst.size() > 0) {
 			seat = rst.get(0);
 			if (seatStudId != null && !seatStudId.equals("")) {
@@ -97,14 +112,14 @@ public class SeatSlt extends HttpServlet {
 			}
 			if (new SeatSrv().modify(seat) == 1) {
 				request.setAttribute("error", "修改成功!");
-				request.getRequestDispatcher("seat_modify.jsp").forward(request, response);
+				request.getRequestDispatcher("/main/seat/seat_modify.jsp").forward(request, response);
 			} else {
 				request.setAttribute("error", "修改失败!请检查数据库状态后再提交修改");
-				request.getRequestDispatcher("seat_modify.jsp").forward(request, response);
+				request.getRequestDispatcher("/main/seat/seat_modify.jsp").forward(request, response);
 			}
 		} else {
 			request.setAttribute("error", "修改失败!未找到符合条件的座位");
-			request.getRequestDispatcher("seat_modify.jsp").forward(request, response);
+			request.getRequestDispatcher("/main/seat/seat_modify.jsp").forward(request, response);
 		}
 	}
 

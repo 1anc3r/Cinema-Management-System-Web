@@ -59,14 +59,14 @@ public class ScheduleSlt extends HttpServlet {
 			sched.setPrice(Double.parseDouble(schedPrice));
 			if (new ScheduleSrv().add(sched) == 1) {
 				request.setAttribute("error", "添加成功!");
-				request.getRequestDispatcher("schedule_add.jsp").forward(request, response);
+				request.getRequestDispatcher("/main/schedule/schedule_add.jsp").forward(request, response);
 			} else {
 				request.setAttribute("error", "添加失败!请检查数据库状态后再提交添加");
-				request.getRequestDispatcher("schedule_add.jsp").forward(request, response);
+				request.getRequestDispatcher("/main/schedule/schedule_add.jsp").forward(request, response);
 			}
 		} else {
 			request.setAttribute("error", "添加失败!请将信息补充完整后再提交添加");
-			request.getRequestDispatcher("schedule_add.jsp").forward(request, response);
+			request.getRequestDispatcher("/main/schedule/schedule_add.jsp").forward(request, response);
 		}
 	}
 
@@ -96,10 +96,10 @@ public class ScheduleSlt extends HttpServlet {
 		if (schedList.size() > 0) {
 			request.setAttribute("error", null);
 			request.setAttribute("list", schedList);
-			request.getRequestDispatcher("schedule_fetch.jsp").forward(request, response);
+			request.getRequestDispatcher("/main/schedule/schedule_fetch.jsp").forward(request, response);
 		} else {
 			request.setAttribute("error", "未找到符合条件的演出计划!");
-			request.getRequestDispatcher("schedule_fetch.jsp").forward(request, response);
+			request.getRequestDispatcher("/main/schedule/schedule_fetch.jsp").forward(request, response);
 		}
 	}
 
@@ -131,14 +131,14 @@ public class ScheduleSlt extends HttpServlet {
 			}
 			if (new ScheduleSrv().modify(sched) == 1) {
 				request.setAttribute("error", "修改成功!");
-				request.getRequestDispatcher("schedule_modify.jsp").forward(request, response);
+				request.getRequestDispatcher("/main/schedule/schedule_modify.jsp").forward(request, response);
 			} else {
 				request.setAttribute("error", "修改失败!请检查数据库状态后再提交修改");
-				request.getRequestDispatcher("schedule_modify.jsp").forward(request, response);
+				request.getRequestDispatcher("/main/schedule/schedule_modify.jsp").forward(request, response);
 			}
 		} else {
 			request.setAttribute("error", "修改失败!未找到符合条件的演出计划");
-			request.getRequestDispatcher("schedule_modify.jsp").forward(request, response);
+			request.getRequestDispatcher("/main/schedule/schedule_modify.jsp").forward(request, response);
 		}
 	}
 
@@ -152,14 +152,14 @@ public class ScheduleSlt extends HttpServlet {
 			sched = rst.get(0);
 			if (new ScheduleSrv().delete(Integer.parseInt(schedId)) == 1) {
 				request.setAttribute("error", "删除成功!");
-				request.getRequestDispatcher("schedule_delete.jsp").forward(request, response);
+				request.getRequestDispatcher("/main/schedule/schedule_delete.jsp").forward(request, response);
 			} else {
 				request.setAttribute("error", "删除失败!请检查数据库状态后再提交删除");
-				request.getRequestDispatcher("schedule_delete.jsp").forward(request, response);
+				request.getRequestDispatcher("/main/schedule/schedule_delete.jsp").forward(request, response);
 			}
 		} else {
 			request.setAttribute("error", "删除失败!未找到符合条件的演出厅");
-			request.getRequestDispatcher("schedule_delete.jsp").forward(request, response);
+			request.getRequestDispatcher("/main/schedule/schedule_delete.jsp").forward(request, response);
 		}
 	}
 

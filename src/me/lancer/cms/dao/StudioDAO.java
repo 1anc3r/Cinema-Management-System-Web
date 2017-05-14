@@ -78,8 +78,11 @@ public class StudioDAO implements iStudioDAO {
 		try {
 			String sqlstr = "select studio_id, studio_name, studio_row_count, studio_col_count, studio_introduction , studio_flag from studio ";
 			condt.trim();
-			if (!condt.isEmpty())
+			if (!condt.isEmpty() && !condt.contains("limit")) {
 				sqlstr += " where " + condt;
+			} else {
+				sqlstr += condt;
+			}
 			DBUtil db = new DBUtil();
 			if (!db.openConnection()) {
 				return null;

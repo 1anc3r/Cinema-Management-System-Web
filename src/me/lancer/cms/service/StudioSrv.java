@@ -5,6 +5,7 @@ import java.util.Map;
 
 import me.lancer.cms.idao.DAOFactory;
 import me.lancer.cms.idao.iStudioDAO;
+import me.lancer.cms.model.Employee;
 import me.lancer.cms.model.Studio;
 
 public class StudioSrv {
@@ -40,5 +41,9 @@ public class StudioSrv {
 			return stuDAO.createSeats(stu);
 		}
 		return -1;
+	}
+	
+	public List<Studio> FetchByPage(int start, int size) {
+		return stuDAO.select("limit "+start+","+size);
 	}
 }

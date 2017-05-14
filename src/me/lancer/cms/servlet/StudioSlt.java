@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import me.lancer.cms.model.Studio;
+import me.lancer.cms.model.Studio; 
 import me.lancer.cms.service.StudioSrv;
 
 public class StudioSlt extends HttpServlet {
@@ -57,14 +57,14 @@ public class StudioSlt extends HttpServlet {
 			stud.setStudioFlag(0);
 			if (new StudioSrv().add(stud) == 1) {
 				request.setAttribute("error", "添加成功!");
-				request.getRequestDispatcher("studio_add.jsp").forward(request, response);
+				request.getRequestDispatcher("/main/studio/studio_add.jsp").forward(request, response);
 			} else {
 				request.setAttribute("error", "添加失败!请检查数据库状态后再提交添加");
-				request.getRequestDispatcher("studio_add.jsp").forward(request, response);
+				request.getRequestDispatcher("/main/studio/studio_add.jsp").forward(request, response);
 			}
 		} else {
 			request.setAttribute("error", "添加失败!请将信息补充完整后再提交添加");
-			request.getRequestDispatcher("studio_add.jsp").forward(request, response);
+			request.getRequestDispatcher("/main/studio/studio_add.jsp").forward(request, response);
 		}
 	}
 
@@ -98,10 +98,10 @@ public class StudioSlt extends HttpServlet {
 		if (studList.size() > 0) {
 			request.setAttribute("error", null);
 			request.setAttribute("list", studList);
-			request.getRequestDispatcher("studio_fetch.jsp").forward(request, response);
+			request.getRequestDispatcher("/main/studio/studio_fetch.jsp").forward(request, response);
 		} else {
 			request.setAttribute("error", "未找到符合条件的演出厅!");
-			request.getRequestDispatcher("studio_fetch.jsp").forward(request, response);
+			request.getRequestDispatcher("/main/studio/studio_fetch.jsp").forward(request, response);
 		}
 	}
 
@@ -137,14 +137,14 @@ public class StudioSlt extends HttpServlet {
 			}
 			if (new StudioSrv().modify(stud) == 1) {
 				request.setAttribute("error", "修改成功!");
-				request.getRequestDispatcher("studio_modify.jsp").forward(request, response);
+				request.getRequestDispatcher("/main/studio/studio_modify.jsp").forward(request, response);
 			} else {
 				request.setAttribute("error", "修改失败!请检查数据库状态后再提交修改");
-				request.getRequestDispatcher("studio_modify.jsp").forward(request, response);
+				request.getRequestDispatcher("/main/studio/studio_modify.jsp").forward(request, response);
 			}
 		} else {
 			request.setAttribute("error", "修改失败!未找到符合条件的演出厅");
-			request.getRequestDispatcher("studio_modify.jsp").forward(request, response);
+			request.getRequestDispatcher("/main/studio/studio_modify.jsp").forward(request, response);
 		}
 	}
 
@@ -160,14 +160,14 @@ public class StudioSlt extends HttpServlet {
 			stud = rst.get(0);
 			if (new StudioSrv().delete(Integer.parseInt(studId)) == 1) {
 				request.setAttribute("error", "删除成功!");
-				request.getRequestDispatcher("studio_delete.jsp").forward(request, response);
+				request.getRequestDispatcher("/main/studio/studio_delete.jsp").forward(request, response);
 			} else {
 				request.setAttribute("error", "删除失败!请检查数据库状态后再提交删除");
-				request.getRequestDispatcher("studio_delete.jsp").forward(request, response);
+				request.getRequestDispatcher("/main/studio/studio_delete.jsp").forward(request, response);
 			}
 		} else {
 			request.setAttribute("error", "删除失败!未找到符合条件的演出厅");
-			request.getRequestDispatcher("studio_delete.jsp").forward(request, response);
+			request.getRequestDispatcher("/main/studio/studio_delete.jsp").forward(request, response);
 		}
 	}
 

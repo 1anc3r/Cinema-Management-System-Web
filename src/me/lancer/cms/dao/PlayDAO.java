@@ -17,8 +17,9 @@ public class PlayDAO implements iPlayDAO {
 		try {
 			String sqlstr = "insert into play( play_type_id, play_lang_id, play_name, play_introduction, play_image, play_length, play_ticket_price, play_status ) values( "
 					+ ply.getTypeId() + ", " + ply.getLangId() + ", '" + ply.getName() + "', '" + ply.getIntroduction()
-					+ "', " + ply.getImage() + ", " + ply.getLength() + ", " + ply.getPrice() + ", " + ply.getStatus()
+					+ "', '" + ply.getImage() + "', " + ply.getLength() + ", " + ply.getPrice() + ", " + ply.getStatus()
 					+ " )";
+			System.out.println(sqlstr);
 			DBUtil db = new DBUtil();
 			db.openConnection();
 			ResultSet rst = db.getInsertObjectIDs(sqlstr);
@@ -79,8 +80,11 @@ public class PlayDAO implements iPlayDAO {
 		try {
 			String sqlstr = "select play_id ,play_type_id, play_lang_id, play_name, play_introduction, play_image, play_length, play_ticket_price, play_status from play ";
 			condt.trim();
-			if (!condt.isEmpty())
+			if (!condt.isEmpty() && !condt.contains("limit")) {
 				sqlstr += " where " + condt;
+			} else {
+				sqlstr += condt;
+			}
 			DBUtil db = new DBUtil();
 			if (!db.openConnection()) {
 				return null;
@@ -94,7 +98,7 @@ public class PlayDAO implements iPlayDAO {
 					ply.setLangId(rst.getInt("play_lang_id"));
 					ply.setName(rst.getString("play_name"));
 					ply.setIntroduction(rst.getString("play_introduction"));
-					ply.setImage(rst.getBytes("play_image"));
+					ply.setImage(rst.getString("play_image"));
 					ply.setLength(rst.getInt("play_length"));
 					ply.setPrice(rst.getInt("play_ticket_price"));
 					ply.setStatus(rst.getInt("play_status"));
@@ -224,7 +228,7 @@ public class PlayDAO implements iPlayDAO {
 					ply.setLangId(rst.getInt("play_lang_id"));
 					ply.setName(rst.getString("play_name"));
 					ply.setIntroduction(rst.getString("play_introduction"));
-					ply.setImage(rst.getBytes("play_image"));
+					ply.setImage(rst.getString("play_image"));
 					ply.setLength(rst.getInt("play_length"));
 					ply.setPrice(rst.getInt("play_ticket_price"));
 					ply.setStatus(rst.getInt("play_status"));

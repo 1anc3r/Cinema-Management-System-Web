@@ -1,78 +1,193 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd" id="WebApp_ID" version="3.1">  <servlet>
-    <servlet-name>LoginSlt</servlet-name>
-    <servlet-class>me.lancer.cms.servlet.LoginSlt</servlet-class>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+	id="WebApp_ID" version="3.1">
+
+	<filter>
+		<display-name>encoding</display-name>
+		<filter-name>encoding</filter-name>
+		<filter-class>me.lancer.cms.filter.EncodingFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>encoding</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<filter>
+		<display-name>judging</display-name>
+		<filter-name>judging</filter-name>
+		<filter-class>me.lancer.cms.filter.JudgingFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>judging</filter-name>
+		<url-pattern>/main/*</url-pattern>
+	</filter-mapping>
+
+	<servlet>
+		<servlet-name>LoginSlt</servlet-name>
+		<servlet-class>me.lancer.cms.servlet.LoginSlt</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>LoginSlt</servlet-name>
+		<url-pattern>/LoginSlt</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>EmployeeSlt</servlet-name>
+		<servlet-class>me.lancer.cms.servlet.EmployeeSlt</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>EmployeeSlt</servlet-name>
+		<url-pattern>/EmployeeSlt</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>StudioSlt</servlet-name>
+		<servlet-class>me.lancer.cms.servlet.StudioSlt</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>StudioSlt</servlet-name>
+		<url-pattern>/StudioSlt</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>SeatSlt</servlet-name>
+		<servlet-class>me.lancer.cms.servlet.SeatSlt</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>SeatSlt</servlet-name>
+		<url-pattern>/SeatSlt</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>PlaySlt</servlet-name>
+		<servlet-class>me.lancer.cms.servlet.PlaySlt</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>PlaySlt</servlet-name>
+		<url-pattern>/PlaySlt</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>ScheduleSlt</servlet-name>
+		<servlet-class>me.lancer.cms.servlet.ScheduleSlt</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ScheduleSlt</servlet-name>
+		<url-pattern>/ScheduleSlt</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>SaleSlt</servlet-name>
+		<servlet-class>me.lancer.cms.servlet.SaleSlt</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>SaleSlt</servlet-name>
+		<url-pattern>/SaleSlt</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>DataDictSlt</servlet-name>
+		<servlet-class>me.lancer.cms.servlet.DataDictSlt</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>DataDictSlt</servlet-name>
+		<url-pattern>/DataDictSlt</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>FileUploadSlt</servlet-name>
+		<servlet-class>me.lancer.cms.servlet.FileUploadSlt</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>FileUploadSlt</servlet-name>
+		<url-pattern>/FileUploadSlt</url-pattern>
+	</servlet-mapping>
+
+  <servlet>
+    <servlet-name>login</servlet-name>
+    <servlet-class>me.lancer.cms.mobile.LoginMbl</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>LoginSlt</servlet-name>
-    <url-pattern>/LoginSlt</url-pattern>
+    <servlet-name>login</servlet-name>
+    <url-pattern>/login</url-pattern>
   </servlet-mapping>
   <servlet>
-    <servlet-name>StudioSlt</servlet-name>
-    <servlet-class>me.lancer.cms.servlet.StudioSlt</servlet-class>
+    <servlet-name>employee</servlet-name>
+    <servlet-class>me.lancer.cms.mobile.EmployeeMbl</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>StudioSlt</servlet-name>
-    <url-pattern>/StudioSlt</url-pattern>
+    <servlet-name>employee</servlet-name>
+    <url-pattern>/employee</url-pattern>
   </servlet-mapping>
   <servlet>
-    <servlet-name>SeatSlt</servlet-name>
-    <servlet-class>me.lancer.cms.servlet.SeatSlt</servlet-class>
+    <servlet-name>studio</servlet-name>
+    <servlet-class>me.lancer.cms.mobile.StudioMbl</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>SeatSlt</servlet-name>
-    <url-pattern>/SeatSlt</url-pattern>
+    <servlet-name>studio</servlet-name>
+    <url-pattern>/studio</url-pattern>
   </servlet-mapping>
   <servlet>
-    <servlet-name>PlaySlt</servlet-name>
-    <servlet-class>me.lancer.cms.servlet.PlaySlt</servlet-class>
+    <servlet-name>seat</servlet-name>
+    <servlet-class>me.lancer.cms.mobile.SeatMbl</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>PlaySlt</servlet-name>
-    <url-pattern>/PlaySlt</url-pattern>
+    <servlet-name>seat</servlet-name>
+    <url-pattern>/seat</url-pattern>
   </servlet-mapping>
   <servlet>
-    <servlet-name>ScheduleSlt</servlet-name>
-    <servlet-class>me.lancer.cms.servlet.ScheduleSlt</servlet-class>
+    <servlet-name>play</servlet-name>
+    <servlet-class>me.lancer.cms.mobile.PlayMbl</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>ScheduleSlt</servlet-name>
-    <url-pattern>/ScheduleSlt</url-pattern>
+    <servlet-name>play</servlet-name>
+    <url-pattern>/play</url-pattern>
   </servlet-mapping>
   <servlet>
-    <servlet-name>SaleSlt</servlet-name>
-    <servlet-class>me.lancer.cms.servlet.SaleSlt</servlet-class>
+    <servlet-name>schedule</servlet-name>
+    <servlet-class>me.lancer.cms.mobile.ScheduleMbl</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>SaleSlt</servlet-name>
-    <url-pattern>/SaleSlt</url-pattern>
+    <servlet-name>schedule</servlet-name>
+    <url-pattern>/schedule</url-pattern>
   </servlet-mapping>
   <servlet>
-    <servlet-name>EmployeeSlt</servlet-name>
-    <servlet-class>me.lancer.cms.servlet.EmployeeSlt</servlet-class>
+    <servlet-name>sale</servlet-name>
+    <servlet-class>me.lancer.cms.mobile.SaleMbl</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>EmployeeSlt</servlet-name>
-    <url-pattern>/EmployeeSlt</url-pattern>
+    <servlet-name>sale</servlet-name>
+    <url-pattern>/sale</url-pattern>
   </servlet-mapping>
   <servlet>
-    <servlet-name>DataDictSlt</servlet-name>
-    <servlet-class>me.lancer.cms.servlet.DataDictSlt</servlet-class>
+    <servlet-name>dictionary</servlet-name>
+    <servlet-class>me.lancer.cms.mobile.DataDictMbl</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>DataDictSlt</servlet-name>
-    <url-pattern>/DataDictSlt</url-pattern>
+    <servlet-name>dictionary</servlet-name>
+    <url-pattern>/dictionary</url-pattern>
   </servlet-mapping>
-  <display-name>Cinema-Management-System-Web</display-name>
-  <welcome-file-list>
-    <welcome-file>index.html</welcome-file>
-    <welcome-file>index.htm</welcome-file>
-    <welcome-file>index.jsp</welcome-file>
-    <welcome-file>default.html</welcome-file>
-    <welcome-file>default.htm</welcome-file>
-    <welcome-file>default.jsp</welcome-file>
-  </welcome-file-list>
-  <login-config>
-    <auth-method>BASIC</auth-method>
-  </login-config>
+  <servlet>
+    <servlet-name>upload</servlet-name>
+    <servlet-class>me.lancer.cms.mobile.FileUploadMbl</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>upload</servlet-name>
+    <url-pattern>/upload</url-pattern>
+  </servlet-mapping>
+
+	<display-name>Cinema-Management-System-Web</display-name>
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+		<welcome-file>index.htm</welcome-file>
+		<welcome-file>index.jsp</welcome-file>
+		<welcome-file>default.html</welcome-file>
+		<welcome-file>default.htm</welcome-file>
+		<welcome-file>default.jsp</welcome-file>
+	</welcome-file-list>
+	<login-config>
+		<auth-method>BASIC</auth-method>
+	</login-config>
 </web-app>

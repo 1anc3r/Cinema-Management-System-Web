@@ -31,7 +31,7 @@ public class LoginSlt extends HttpServlet {
 
 		Employee employee = null;
 
-		String usrName = request.getParameter("user_name");
+		String usrName = request.getParameter("username");
 		String passWord = request.getParameter("password");
 
 		try {
@@ -49,31 +49,22 @@ public class LoginSlt extends HttpServlet {
 						session.setAttribute("address", employee.getAddr());
 						session.setAttribute("telephone", employee.getTel());
 						session.setAttribute("email", employee.getEmail());
-						response.sendRedirect("main.jsp");
+						response.sendRedirect(request.getContextPath()+"/main/main.jsp");
+						System.out.println(usrName+" "+passWord);
 					} else {
-						// response.setHeader("refresh", "2;URL=index.jsp");
-						// out.println("<script> alert('用户" + usrName +
-						// "密码错误！');</script>");
 						session.setAttribute("error", "用户" + usrName + "密码错误！");
 						response.sendRedirect("index.jsp");
+						return ;
 					}
 				} else {
-					// response.setHeader("refresh", "2;URL=index.jsp");
-					// out.println("<script> alert('用户" + usrName +
-					// "不存在！');</script>");
 					session.setAttribute("error", "用户" + usrName + "不存在！");
 					response.sendRedirect("index.jsp");
 				}
 			} else {
-				// response.setHeader("refresh", "2;URL=index.jsp");
-				// out.println("<script> alert('数据错误！');</script>");
 				session.setAttribute("error", "数据错误！");
 				response.sendRedirect("index.jsp");
 			}
 		} catch (Exception e) {
-			// response.setHeader("refresh", "2;URL=index.jsp");
-			// out.println("<script> alert('捕获异常" + e.toString() +
-			// "！');</script>");
 			session.setAttribute("error", "捕获异常" + e.toString() + "！");
 			response.sendRedirect("index.jsp");
 		}
