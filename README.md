@@ -1,4 +1,4 @@
-# Cinema-Management-System-Web（影院管理系统 Java Web 版）
+# Cinema-Management-System-Web
 ## 简介
 大三上期 JavaWeb 课程设计——影院管理系统 Java Web 版.
 
