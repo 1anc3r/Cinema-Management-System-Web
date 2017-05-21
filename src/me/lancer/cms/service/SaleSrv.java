@@ -1,6 +1,7 @@
 package me.lancer.cms.service;
 
 import java.util.List;
+import java.util.Map;
 
 import me.lancer.cms.idao.DAOFactory;
 import me.lancer.cms.idao.iSaleDAO;
@@ -33,5 +34,9 @@ public class SaleSrv {
 
 	public List<Sale> FetchAll() {
 		return saleDAO.select("");
+	}
+
+	public List<Sale> Fetch_(Map<String, String> map) {
+		return saleDAO.select_(map);
 	}
 }

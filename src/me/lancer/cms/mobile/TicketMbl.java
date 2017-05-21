@@ -1,17 +1,20 @@
 package me.lancer.cms.mobile;
 
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.util.HashMap;
+import java.sql.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
-import me.lancer.cms.model.Studio;
-import me.lancer.cms.service.StudioSrv;
+import com.google.gson.Gson;
+
+import me.lancer.cms.model.Ticket;
+import me.lancer.cms.service.TicketSrv;
 
 public class TicketMbl extends HttpServlet {
 
@@ -29,8 +32,7 @@ public class TicketMbl extends HttpServlet {
 		String method = request.getParameter("method");
 		String session = request.getParameter("session");
 		if (session != null) {
-			session = session.substring(0, session.length() - (session.charAt(session.length() - 1) - '0') - 1);
-			if (request.getRequestedSessionId().equals(session)) {
+			if (mApp.getSessionid(session)) {
 				if ("add".equalsIgnoreCase(method)) {
 					doAdd(request, response);
 				} else if ("fetch".equalsIgnoreCase(method)) {
@@ -43,13 +45,13 @@ public class TicketMbl extends HttpServlet {
 			} else {
 				String str = "\"session错误!\"";
 				System.out.println(str);
-				request.setAttribute("data", "{\"data\":" + str + "}");
+				request.setAttribute("data", "{\"code\":-1,\"data\":" + str + "}");
 				request.getRequestDispatcher("/main/mobile_data.jsp").forward(request, response);
 			}
 		} else {
 			String str = "\"session错误!\"";
 			System.out.println(str);
-			request.setAttribute("data", "{\"data\":" + str + "}");
+			request.setAttribute("data", "{\"code\":-1,\"data\":" + str + "}");
 			request.getRequestDispatcher("/main/mobile_data.jsp").forward(request, response);
 		}
 	}
@@ -59,246 +61,181 @@ public class TicketMbl extends HttpServlet {
 	}
 
 	public void doAdd(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String seatId = request.getParameter("seatid");
+		String schedId = request.getParameter("schedid");
+		String price = request.getParameter("price");
+		String status = request.getParameter("status");
+		String lockTime = request.getParameter("locktime");
 
-		response.setContentType("text/html");
-		request.setCharacterEncoding("utf-8");
-		response.setCharacterEncoding("utf-8");
-		PrintWriter out = response.getWriter();
-
-		String studName = request.getParameter("name");
-		String studRows = request.getParameter("rows");
-		String studCols = request.getParameter("cols");
-		String studIntroduction = request.getParameter("introduction");
-
-		try {
-			if (studName.length() > 0 && studRows.length() > 0 && studCols.length() > 0
-					&& studIntroduction.length() > 0) {
-				Studio stud = new Studio();
-				stud.setName(studName);
-				stud.setRowCount(Integer.parseInt(studRows));
-				stud.setColCount(Integer.parseInt(studCols));
-				stud.setIntroduction(studIntroduction);
-				stud.setStudioFlag(0);
-				if (new StudioSrv().add(stud) == 1) {
-					// response.setHeader("refresh", "2;URL=main.jsp");
-					// out.print("<font size=5 color=red>添加成功！</font>");
-					HttpSession session = request.getSession(true);
-					session.setAttribute("error", "添加成功！");
-					response.sendRedirect("studio_list.jsp");
-				} else {
-					// response.setHeader("refresh", "2;URL=main.jsp");
-					// out.print("<font size=5 color=red>添加失败！</font>");
-					HttpSession session = request.getSession(true);
-					session.setAttribute("error", "添加失败！");
-					response.sendRedirect("studio_list.jsp");
-				}
+		if (seatId.length() > 0 && schedId.length() > 0 && price.length() > 0 && status.length() > 0
+				&& lockTime.length() > 0) {
+			Ticket tick = new Ticket();
+			tick.setSeatId(Integer.parseInt(seatId));
+			tick.setScheduleId(Integer.parseInt(schedId));
+			tick.setPrice(Float.parseFloat(price));
+			tick.setStatus(Integer.parseInt(status));
+			tick.setLocked_time(Date.valueOf(lockTime));
+			if (new TicketSrv().add(tick) == 1) {
+				// request.setAttribute("error", "添加成功!");
+				// request.getRequestDispatcher("/main/studio/studio_add.jsp").forward(request,
+				// response);
+				String str = "\"添加成功!\"";
+				System.out.println(str);
+				request.setAttribute("data", "{\"code\":0,\"data\":" + tick.getLocked_time() + "}");
+				request.getRequestDispatcher("/main/mobile_data.jsp").forward(request, response);
 			} else {
-				// response.setHeader("refresh", "2;URL=main.jsp");
-				// out.print("<font size=5 color=red>数据错误！</font>");
-				HttpSession session = request.getSession(true);
-				session.setAttribute("error", "数据错误！");
-				response.sendRedirect("studio_list.jsp");
+				// request.setAttribute("error", "添加失败!请检查数据库状态后再提交添加");
+				// request.getRequestDispatcher("/main/studio/studio_add.jsp").forward(request,
+				// response);
+				String str = "\"添加失败!请稍后再提交添加\"";
+				System.out.println(str);
+				request.setAttribute("data", "{\"code\":1,\"data\":" + str + "}");
+				request.getRequestDispatcher("/main/mobile_data.jsp").forward(request, response);
 			}
-		} catch (Exception e) {
-			// response.setHeader("refresh", "2;URL=main.jsp");
-			// out.println("<script> alert('捕获异常" + e.toString() +
-			// "！');</script>");
-			HttpSession session = request.getSession(true);
-			session.setAttribute("error", "捕获异常" + e.toString() + "！");
-			response.sendRedirect("studio_list.jsp");
+		} else {
+			// request.setAttribute("error", "添加失败!请将信息补充完整后再提交添加");
+			// request.getRequestDispatcher("/main/studio/studio_add.jsp").forward(request,
+			// response);
+			String str = "\"添加失败!请将信息补充完整后再提交添加\"";
+			System.out.println(str);
+			request.setAttribute("data", "{\"code\":2,\"data\":" + str + "}");
+			request.getRequestDispatcher("/main/mobile_data.jsp").forward(request, response);
 		}
-		out.flush();
-		out.close();
 	}
 
 	public void doFetch(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-		response.setContentType("text/html");
-		request.setCharacterEncoding("utf-8");
-		response.setCharacterEncoding("utf-8");
-		PrintWriter out = response.getWriter();
-
-		String studName = request.getParameter("name");
-		String studRows = request.getParameter("rows");
-		String studCols = request.getParameter("cols");
-		String studIntroduction = request.getParameter("introduction");
-		String studFlag = request.getParameter("flag");
-
-		try {
-			String sql = "";
-			if (studName.length() > 0) {
-				if (sql.equals("")) {
-					sql += " studio_name='" + studName + "'";
-				} else {
-					sql += " and studio_name='" + studName + "'";
-				}
-			}
-			if (studRows.length() > 0) {
-				if (sql.equals("")) {
-					sql += " studio_row_count=" + studRows;
-				} else {
-					sql += " and studio_row_count=" + studRows;
-				}
-			}
-			if (studCols.length() > 0) {
-				if (sql.equals("")) {
-					sql += " studio_col_count=" + studCols;
-				} else {
-					sql += " and studio_col_count=" + studCols;
-				}
-			}
-			if (studIntroduction.length() > 0) {
-				if (sql.equals("")) {
-					sql += " studio_introduction='" + studIntroduction + "'";
-				} else {
-					sql += " and studio_introduction='" + studIntroduction + "'";
-				}
-			}
-			if (studFlag.length() > 0) {
-				if (sql.equals("")) {
-					sql += " studio_flag=" + studFlag;
-				} else {
-					sql += " and studio_flag=" + studFlag;
-				}
-			}
-			List<Studio> studList = new StudioSrv().Fetch(sql);
-			if (studList.size() > 0) {
-				HttpSession session = request.getSession(true);
-				session.setAttribute("studlist", studList);
-				response.sendRedirect("main.jsp");
-			} else {
-				// response.setHeader("refresh", "2;URL=main.jsp");
-				// out.print("<font size=5 color=red>未找到演出厅！</font>");
-				HttpSession session = request.getSession(true);
-				session.setAttribute("error", "未找到演出厅！");
-				response.sendRedirect("studio_list.jsp");
-			}
-		} catch (Exception e) {
-			// response.setHeader("refresh", "2;URL=main.jsp");
-			// out.println("<script> alert('捕获异常" + e.toString() +
-			// "！');</script>");
-			HttpSession session = request.getSession(true);
-			session.setAttribute("error", "捕获异常" + e.toString() + "！");
-			response.sendRedirect("studio_list.jsp");
+		String tickId = request.getParameter("id");
+		String seatId = request.getParameter("seatid");
+		String schedId = request.getParameter("schedid");
+		String price = request.getParameter("price");
+		String status = request.getParameter("status");
+		String lockTime = request.getParameter("locktime");
+		Map<String, String> map = new HashMap<String, String>();
+		if (tickId != null && !tickId.equals("")) {
+			map.put("id", tickId);
 		}
-		out.flush();
-		out.close();
+		if (seatId != null && !seatId.equals("")) {
+			map.put("seatid", seatId);
+		}
+		if (schedId != null && !schedId.equals("")) {
+			map.put("schedid", schedId);
+		}
+		if (price != null && !price.equals("")) {
+			map.put("price", price);
+		}
+		if (status != null && !status.equals("")) {
+			map.put("status", status);
+		}
+		if (lockTime != null && !lockTime.equals("")) {
+			map.put("locktime", lockTime);
+		}
+		List<Ticket> tickList = new TicketSrv().Fetch_(map);
+		if (tickList.size() > 0) {
+			// request.setAttribute("error", null);
+			// request.setAttribute("list", studList);
+			// request.getRequestDispatcher("/main/studio/studio_fetch.jsp").forward(request,
+			// response);
+			Gson gson = new Gson();
+			String str = gson.toJson(tickList);
+			System.out.println(request.getRequestedSessionId());
+			request.setAttribute("data", "{\"code\":0,\"data\":" + str + "}");
+			request.getRequestDispatcher("/main/mobile_data.jsp").forward(request, response);
+		} else {
+			// request.setAttribute("error", "未找到符合条件的演出厅!");
+			// request.getRequestDispatcher("/main/studio/studio_fetch.jsp").forward(request,
+			// response);
+			String str = "\"未找到符合条件的电影票!\"";
+			System.out.println(str);
+			request.setAttribute("data", "{\"code\":1,\"data\":" + str + "}");
+			request.getRequestDispatcher("/main/mobile_data.jsp").forward(request, response);
+		}
 	}
 
 	public void doModify(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		String tickId = request.getParameter("id");
+		String seatId = request.getParameter("seatid");
+		String schedId = request.getParameter("schedid");
+		String price = request.getParameter("price");
+		String status = request.getParameter("status");
+		String lockTime = request.getParameter("locktime");
 
-		response.setContentType("text/html");
-		request.setCharacterEncoding("utf-8");
-		response.setCharacterEncoding("utf-8");
-		PrintWriter out = response.getWriter();
-
-		String studId = request.getParameter("id");
-		String studName = request.getParameter("name");
-		String studRows = request.getParameter("rows");
-		String studCols = request.getParameter("cols");
-		String studIntroduction = request.getParameter("introduction");
-		String studFlag = request.getParameter("flag");
-
-		try {
-			Studio stud = new Studio();
-			stud.setID(Integer.parseInt(studId));
-			List<Studio> rst = new StudioSrv().Fetch(" studio_id=" + studId);
-			if (rst.size() > 0) {
-				stud = rst.get(0);
-				if (!studName.equals("")) {
-					stud.setName(studName);
-				}
-				if (!studRows.equals("")) {
-					stud.setRowCount(Integer.parseInt(studRows));
-				}
-				if (!studCols.equals("")) {
-					stud.setColCount(Integer.parseInt(studCols));
-				}
-				if (!studIntroduction.equals("")) {
-					stud.setIntroduction(studIntroduction);
-				}
-				if (!studFlag.equals("")) {
-					stud.setStudioFlag(Integer.parseInt(studFlag));
-				}
-				if (new StudioSrv().modify(stud) == 1) {
-					// response.setHeader("refresh", "2;URL=main.jsp");
-					// out.print("<font size=5 color=red>修改成功！</font>");
-					HttpSession session = request.getSession(true);
-					session.setAttribute("error", "修改成功！");
-					response.sendRedirect("studio_list.jsp");
-				} else {
-					// response.setHeader("refresh", "2;URL=main.jsp");
-					// out.print("<font size=5 color=red>修改失败！</font>");
-					HttpSession session = request.getSession(true);
-					session.setAttribute("error", "修改失败！");
-					response.sendRedirect("studio_list.jsp");
-				}
+		String sql = " ticket_id=" + tickId;
+		List<Ticket> tickList = new TicketSrv().Fetch(sql);
+		if (tickList.size() > 0) {
+			// request.setAttribute("error", null);
+			// request.setAttribute("list", studList);
+			// request.getRequestDispatcher("/main/studio/studio_fetch.jsp").forward(request,
+			// response);
+			Ticket tick = tickList.get(0);
+			tick.setSeatId(Integer.parseInt(seatId));
+			tick.setScheduleId(Integer.parseInt(schedId));
+			tick.setPrice(Float.parseFloat(price));
+			tick.setStatus(Integer.parseInt(status));
+			tick.setLocked_time(Date.valueOf(lockTime));
+			if (new TicketSrv().modify(tick) == 1) {
+				// request.setAttribute("error", "添加成功!");
+				// request.getRequestDispatcher("/main/studio/studio_add.jsp").forward(request,
+				// response);
+				String str = "\"修改成功!\"";
+				System.out.println(str);
+				request.setAttribute("data", "{\"code\":0,\"data\":" + str + "}");
+				request.getRequestDispatcher("/main/mobile_data.jsp").forward(request, response);
 			} else {
-				// response.setHeader("refresh", "2;URL=main.jsp");
-				// out.print("<font size=5 color=red>未找到待修改演出厅！</font>");
-				HttpSession session = request.getSession(true);
-				session.setAttribute("error", "未找到待修改演出厅！");
-				response.sendRedirect("studio_list.jsp");
+				// request.setAttribute("error", "添加失败!请检查数据库状态后再提交添加");
+				// request.getRequestDispatcher("/main/studio/studio_add.jsp").forward(request,
+				// response);
+				String str = "\"修改失败!请稍后再提交添加\"";
+				System.out.println(str);
+				request.setAttribute("data", "{\"code\":1,\"data\":" + str + "}");
+				request.getRequestDispatcher("/main/mobile_data.jsp").forward(request, response);
 			}
-		} catch (Exception e) {
-			// response.setHeader("refresh", "2;URL=main.jsp");
-			// out.println("<script> alert('捕获异常" + e.toString() +
-			// "！');</script>");
-			HttpSession session = request.getSession(true);
-			session.setAttribute("error", "捕获异常" + e.toString() + "！");
-			response.sendRedirect("studio_list.jsp");
+		} else {
+			// request.setAttribute("error", "未找到符合条件的演出厅!");
+			// request.getRequestDispatcher("/main/studio/studio_fetch.jsp").forward(request,
+			// response);
+			String str = "\"未找到符合条件的电影票!\"";
+			System.out.println(str);
+			request.setAttribute("data", "{\"code\":1,\"data\":" + str + "}");
+			request.getRequestDispatcher("/main/mobile_data.jsp").forward(request, response);
 		}
-		out.flush();
-		out.close();
 	}
 
 	public void doDelete(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		String tickId = request.getParameter("id");
 
-		response.setContentType("text/html");
-		request.setCharacterEncoding("utf-8");
-		response.setCharacterEncoding("utf-8");
-		PrintWriter out = response.getWriter();
-
-		String studId = request.getParameter("id");
-
-		try {
-			Studio stud = new Studio();
-			stud.setID(Integer.parseInt(studId));
-			List<Studio> rst = new StudioSrv().Fetch(" studio_id=" + studId);
-			if (rst.size() > 0) {
-				stud = rst.get(0);
-				if (new StudioSrv().delete(Integer.parseInt(studId)) == 1) {
-					// response.setHeader("refresh", "2;URL=main.jsp");
-					// out.print("<font size=5 color=red>删除成功！</font>");
-					HttpSession session = request.getSession(true);
-					session.setAttribute("error", "删除成功！");
-					response.sendRedirect("studio_list.jsp");
-				} else {
-					// response.setHeader("refresh", "2;URL=main.jsp");
-					// out.print("<font size=5 color=red>删除失败！</font>");
-					HttpSession session = request.getSession(true);
-					session.setAttribute("error", "删除失败！");
-					response.sendRedirect("studio_list.jsp");
-				}
+		Ticket tick = new Ticket();
+		tick.setId(Integer.parseInt(tickId));
+		List<Ticket> rst = new TicketSrv().Fetch(" ticket_id=" + tickId);
+		if (rst.size() > 0) {
+			tick = rst.get(0);
+			if (new TicketSrv().delete(Integer.parseInt(tickId)) == 1) {
+				// request.setAttribute("error", "删除成功!");
+				// request.getRequestDispatcher("/main/studio/studio_delete.jsp").forward(request,
+				// response);
+				String str = "\"删除成功!\"";
+				System.out.println(str);
+				request.setAttribute("data", "{\"code\":0,\"data\":" + str + "}");
+				request.getRequestDispatcher("/main/mobile_data.jsp").forward(request, response);
 			} else {
-				// response.setHeader("refresh", "2;URL=main.jsp");
-				// out.print("<font size=5 color=red>未找到待删除演出厅！</font>");
-				HttpSession session = request.getSession(true);
-				session.setAttribute("error", "未找到待删除演出厅！！");
-				response.sendRedirect("studio_list.jsp");
+				// request.setAttribute("error", "删除失败!请检查数据库状态后再提交删除");
+				// request.getRequestDispatcher("/main/studio/studio_delete.jsp").forward(request,
+				// response);
+				String str = "\"删除失败!请稍后再提交删除\"";
+				System.out.println(str);
+				request.setAttribute("data", "{\"code\":1,\"data\":" + str + "}");
+				request.getRequestDispatcher("/main/mobile_data.jsp").forward(request, response);
 			}
-		} catch (Exception e) {
-			// response.setHeader("refresh", "2;URL=main.jsp");
-			// out.println("<script> alert('捕获异常" + e.toString() +
-			// "！');</script>");
-			HttpSession session = request.getSession(true);
-			session.setAttribute("error", "捕获异常" + e.toString() + "！");
-			response.sendRedirect("studio_list.jsp");
+		} else {
+			// request.setAttribute("error", "删除失败!未找到符合条件的演出厅");
+			// request.getRequestDispatcher("/main/studio/studio_delete.jsp").forward(request,
+			// response);
+			String str = "\"删除失败!未找到符合条件的电影票\"";
+			System.out.println(str);
+			request.setAttribute("data", "{\"code\":2,\"data\":" + str + "}");
+			request.getRequestDispatcher("/main/mobile_data.jsp").forward(request, response);
 		}
-		out.flush();
-		out.close();
 	}
 
 	public void destroy() {

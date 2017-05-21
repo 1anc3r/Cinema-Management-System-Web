@@ -1,8 +1,6 @@
 package me.lancer.cms.mobile;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,10 +9,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
 import com.google.gson.Gson;
 
@@ -36,8 +30,7 @@ public class PlayMbl extends HttpServlet {
 		String method = request.getParameter("method");
 		String session = request.getParameter("session");
 		if (session != null) {
-			session = session.substring(0, session.length() - (session.charAt(session.length() - 1) - '0') - 1);
-			if (request.getRequestedSessionId().equals(session)) {
+			if (mApp.getSessionid(session)) {
 				if ("add".equalsIgnoreCase(method)) {
 					doAdd(request, response);
 				} else if ("fetch".equalsIgnoreCase(method)) {
@@ -50,13 +43,13 @@ public class PlayMbl extends HttpServlet {
 			} else {
 				String str = "\"session错误!\"";
 				System.out.println(str);
-				request.setAttribute("data", "{\"data\":" + str + "}");
+				request.setAttribute("data", "{\"code\":-1,\"data\":" + str + "}");
 				request.getRequestDispatcher("/main/mobile_data.jsp").forward(request, response);
 			}
 		} else {
 			String str = "\"session错误!\"";
 			System.out.println(str);
-			request.setAttribute("data", "{\"data\":" + str + "}");
+			request.setAttribute("data", "{\"code\":-1,\"data\":" + str + "}");
 			request.getRequestDispatcher("/main/mobile_data.jsp").forward(request, response);
 		}
 	}
@@ -66,82 +59,50 @@ public class PlayMbl extends HttpServlet {
 	}
 
 	public void doAdd(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-//		String playType = request.getParameter("type");
-//		String playLang = request.getParameter("lang");
-//		String playName = request.getParameter("name");
-//		String playIntroduction = request.getParameter("introduction");
-//		String playLength = request.getParameter("length");
-//		String playPrice = request.getParameter("price");
-//		if (playType != null && playLang != null && playName != null && playIntroduction != null && playLength != null
-//				&& playPrice != null && !playType.equals("") && !playLang.equals("") && !playName.equals("")
-//				&& !playIntroduction.equals("") && !playLength.equals("") && !playPrice.equals("")) {
-//			Play play = new Play();
-//			play.setTypeId(Integer.parseInt(playType));
-//			play.setLangId(Integer.parseInt(playLang));
-//			play.setName(playName);
-//			play.setIntroduction(playIntroduction);
-//			play.setLength(Integer.parseInt(playLength));
-//			play.setPrice(Float.parseFloat(playPrice));
-//			if (new PlaySrv().add(play) == 1) {
-//				request.setAttribute("error", "添加成功!");
-//				request.getRequestDispatcher("/main/play/play_add.jsp").forward(request, response);
-//			} else {
-//				request.setAttribute("error", "添加失败!请检查数据库状态后再提交添加");
-//				request.getRequestDispatcher("/main/play/play_add.jsp").forward(request, response);
-//			}
-//		} else {
-//			request.setAttribute("error", "添加失败!请将信息补充完整后再提交添加");
-//			request.getRequestDispatcher("/main/play/play_add.jsp").forward(request, response);
-//		}
-		String paramName = "", paramValue = "";
-		Play play = new Play();
-		DiskFileItemFactory dff = new DiskFileItemFactory();
-		dff.setSizeThreshold(1024000);
-		ServletFileUpload sfu = new ServletFileUpload(dff);
-		sfu.setFileSizeMax(1024 * 1024 * 2);
-		try {
-			List<FileItem> uploaditems = sfu.parseRequest(request);
-			for (FileItem fileItem : uploaditems) {
-				paramName = fileItem.getFieldName();
-				System.out.print(paramName + ":");
-
-				if (fileItem.isFormField()) {
-					paramValue = new String(fileItem.getString().getBytes("ISO-8859-1"), "UTF-8");
-					System.out.println(paramValue);
-
-					if ("play_type".equals(paramName))
-						play.setTypeId(Integer.parseInt(paramValue));
-					if ("play_lang".equals(paramName))
-						play.setLangId(Integer.parseInt(paramValue));
-					if ("play_name".equals(paramName))
-						play.setName(paramValue);
-					if ("play_introduction".equals(paramName))
-						play.setIntroduction(paramValue);
-					if ("play_length".equals(paramName))
-						play.setLength(Integer.parseInt(paramValue));
-					if ("play_ticket_price".equals(paramName))
-						play.setPrice(Float.parseFloat(paramValue));
-				} else {
-					Long size = fileItem.getSize();
-					String fileName = fileItem.getName();
-					fileName = fileName.substring(fileName.lastIndexOf("\\") + 1);
-					System.out.println("\n文件名：" + fileName + "\t大小：" + size + "byte");
-					File file = new File(getServletContext().getRealPath("/") + fileName);
-					fileItem.write(file);
-					play.setImage(getServletContext().getRealPath("/") + fileName);
-				}
-			}
+		String playType = request.getParameter("type");
+		String playLang = request.getParameter("lang");
+		String playName = request.getParameter("name");
+		String playIntroduction = request.getParameter("introduction");
+		String playLength = request.getParameter("length");
+		String playPrice = request.getParameter("price");
+		String playStatus = request.getParameter("pricstatuse");
+		if (playType != null && playLang != null && playName != null && playIntroduction != null && playLength != null
+				&& playPrice != null && !playType.equals("") && !playLang.equals("") && !playName.equals("")
+				&& !playIntroduction.equals("") && !playLength.equals("") && !playPrice.equals("")) {
+			Play play = new Play();
+			play.setTypeId(Integer.parseInt(playType));
+			play.setLangId(Integer.parseInt(playLang));
+			play.setName(playName);
+			play.setIntroduction(playIntroduction);
+			play.setLength(Integer.parseInt(playLength));
+			play.setPrice(Float.parseFloat(playPrice));
+			play.setStatus(Integer.parseInt(playStatus));
 			if (new PlaySrv().add(play) == 1) {
-				System.out.println("添加成功!");
+				// request.setAttribute("error", "添加成功!");
+				// request.getRequestDispatcher("/main/studio/studio_add.jsp").forward(request,
+				// response);
+				String str = "\"添加成功!\"";
+				System.out.println(str);
+				request.setAttribute("data", "{\"code\":0,\"data\":" + str + "}");
+				request.getRequestDispatcher("/main/mobile_data.jsp").forward(request, response);
 			} else {
-				System.out.println("添加失败!请检查数据库状态后再提交添加");
+				// request.setAttribute("error", "添加失败!请检查数据库状态后再提交添加");
+				// request.getRequestDispatcher("/main/studio/studio_add.jsp").forward(request,
+				// response);
+				String str = "\"添加失败!请稍后再提交添加\"";
+				System.out.println(str);
+				request.setAttribute("data", "{\"code\":1,\"data\":" + str + "}");
+				request.getRequestDispatcher("/main/mobile_data.jsp").forward(request, response);
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
+		} else {
+			// request.setAttribute("error", "添加失败!请将信息补充完整后再提交添加");
+			// request.getRequestDispatcher("/main/studio/studio_add.jsp").forward(request,
+			// response);
+			String str = "\"添加失败!请将信息补充完整后再提交添加\"";
+			System.out.println(str);
+			request.setAttribute("data", "{\"code\":2,\"data\":" + str + "}");
+			request.getRequestDispatcher("/main/mobile_data.jsp").forward(request, response);
 		}
-
-		request.setAttribute("play", play);
-		request.getRequestDispatcher("/main/play/play_list.jsp").forward(request, response);
 	}
 
 	public void doFetch(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -180,17 +141,23 @@ public class PlayMbl extends HttpServlet {
 		}
 		List<Play> playList = new PlaySrv().Fetch_(map);
 		if (playList.size() > 0) {
-//			request.setAttribute("error", null);
-//			request.setAttribute("list", playList);
-//			request.getRequestDispatcher("/main/play/play_fetch.jsp").forward(request, response);
-	        Gson gson = new Gson();
-			String str = gson.toJson(playList);  
-	        System.out.println(str);
-	        request.setAttribute("data", "{\"data\":" + str + "}");
-	        request.getRequestDispatcher("/main/mobile_data.jsp").forward(request, response);
+			// request.setAttribute("error", null);
+			// request.setAttribute("list", studList);
+			// request.getRequestDispatcher("/main/studio/studio_fetch.jsp").forward(request,
+			// response);
+			Gson gson = new Gson();
+			String str = gson.toJson(playList);
+			System.out.println(request.getRequestedSessionId());
+			request.setAttribute("data", "{\"code\":0,\"data\":" + str + "}");
+			request.getRequestDispatcher("/main/mobile_data.jsp").forward(request, response);
 		} else {
-			request.setAttribute("error", "未找到符合条件的剧目!");
-			request.getRequestDispatcher("/main/play/play_fetch.jsp").forward(request, response);
+			// request.setAttribute("error", "未找到符合条件的演出厅!");
+			// request.getRequestDispatcher("/main/studio/studio_fetch.jsp").forward(request,
+			// response);
+			String str = "\"未找到符合条件的演出厅!\"";
+			System.out.println(str);
+			request.setAttribute("data", "{\"code\":1,\"data\":" + str + "}");
+			request.getRequestDispatcher("/main/mobile_data.jsp").forward(request, response);
 		}
 	}
 
@@ -200,7 +167,6 @@ public class PlayMbl extends HttpServlet {
 		response.setContentType("text/html");
 		request.setCharacterEncoding("utf-8");
 		response.setCharacterEncoding("utf-8");
-		PrintWriter out = response.getWriter();
 
 		String playId = request.getParameter("id");
 		String playType = request.getParameter("type");
@@ -262,15 +228,30 @@ public class PlayMbl extends HttpServlet {
 				play.setStatus(Integer.parseInt(playStatus));
 			}
 			if (new PlaySrv().modify(play) == 1) {
-				request.setAttribute("error", "修改成功!");
-				request.getRequestDispatcher("/main/play/play_modify.jsp").forward(request, response);
+				// request.setAttribute("error", "修改成功!");
+				// request.getRequestDispatcher("/main/studio/studio_modify.jsp").forward(request,
+				// response);
+				String str = "\"修改成功!\"";
+				System.out.println(str);
+				request.setAttribute("data", "{\"code\":0,\"data\":" + str + "}");
+				request.getRequestDispatcher("/main/mobile_data.jsp").forward(request, response);
 			} else {
-				request.setAttribute("error", "修改失败!请检查数据库状态后再提交修改");
-				request.getRequestDispatcher("/main/play/play_modify.jsp").forward(request, response);
+				// request.setAttribute("error", "修改失败!请检查数据库状态后再提交修改");
+				// request.getRequestDispatcher("/main/studio/studio_modify.jsp").forward(request,
+				// response);
+				String str = "\"修改失败!请稍后再提交修改\"";
+				System.out.println(str);
+				request.setAttribute("data", "{\"code\":1,\"data\":" + str + "}");
+				request.getRequestDispatcher("/main/mobile_data.jsp").forward(request, response);
 			}
 		} else {
-			request.setAttribute("error", "修改失败!未找到符合条件的演出厅");
-			request.getRequestDispatcher("/main/play/play_modify.jsp").forward(request, response);
+			// request.setAttribute("error", "修改失败!未找到符合条件的演出厅");
+			// request.getRequestDispatcher("/main/studio/studio_modify.jsp").forward(request,
+			// response);
+			String str = "\"修改失败!未找到符合条件的演出厅\"";
+			System.out.println(str);
+			request.setAttribute("data", "{\"code\":2,\"data\":" + str + "}");
+			request.getRequestDispatcher("/main/mobile_data.jsp").forward(request, response);
 		}
 	}
 
@@ -280,7 +261,6 @@ public class PlayMbl extends HttpServlet {
 		response.setContentType("text/html");
 		request.setCharacterEncoding("utf-8");
 		response.setCharacterEncoding("utf-8");
-		PrintWriter out = response.getWriter();
 
 		String playId = request.getParameter("id");
 
@@ -290,15 +270,30 @@ public class PlayMbl extends HttpServlet {
 		if (rst.size() > 0) {
 			play = rst.get(0);
 			if (new PlaySrv().delete(Integer.parseInt(playId)) == 1) {
-				request.setAttribute("error", "删除成功!");
-				request.getRequestDispatcher("/main/play/play_delete.jsp").forward(request, response);
+				// request.setAttribute("error", "删除成功!");
+				// request.getRequestDispatcher("/main/studio/studio_delete.jsp").forward(request,
+				// response);
+				String str = "\"删除成功!\"";
+				System.out.println(str);
+				request.setAttribute("data", "{\"code\":0,\"data\":" + str + "}");
+				request.getRequestDispatcher("/main/mobile_data.jsp").forward(request, response);
 			} else {
-				request.setAttribute("error", "删除失败!请检查数据库状态后再提交删除");
-				request.getRequestDispatcher("/main/play/play_delete.jsp").forward(request, response);
+				// request.setAttribute("error", "删除失败!请检查数据库状态后再提交删除");
+				// request.getRequestDispatcher("/main/studio/studio_delete.jsp").forward(request,
+				// response);
+				String str = "\"删除失败!请稍后再提交删除\"";
+				System.out.println(str);
+				request.setAttribute("data", "{\"code\":1,\"data\":" + str + "}");
+				request.getRequestDispatcher("/main/mobile_data.jsp").forward(request, response);
 			}
 		} else {
-			request.setAttribute("error", "删除失败!未找到符合条件的演出厅");
-			request.getRequestDispatcher("/main/play/play_delete.jsp").forward(request, response);
+			// request.setAttribute("error", "删除失败!未找到符合条件的演出厅");
+			// request.getRequestDispatcher("/main/studio/studio_delete.jsp").forward(request,
+			// response);
+			String str = "\"删除失败!未找到符合条件的演出厅\"";
+			System.out.println(str);
+			request.setAttribute("data", "{\"code\":2,\"data\":" + str + "}");
+			request.getRequestDispatcher("/main/mobile_data.jsp").forward(request, response);
 		}
 	}
 

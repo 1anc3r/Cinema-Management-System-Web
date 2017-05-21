@@ -26,8 +26,8 @@ public class LoginMbl extends HttpServlet {
 		response.setContentType("text/html");
 		request.setCharacterEncoding("utf-8");
 		response.setCharacterEncoding("utf-8");
-		HttpSession session = request.getSession(true);
 		PrintWriter out = response.getWriter();
+		HttpSession session = request.getSession();
 
 		Employee employee = null;
 
@@ -37,56 +37,60 @@ public class LoginMbl extends HttpServlet {
 		try {
 			if (usrName.length() > 0) {
 				List<Employee> empList = new EmployeeSrv().Fetch("(emp_name='" + usrName + "')");
+				empList.addAll(new EmployeeSrv().Fetch("(emp_no='" + usrName + "')"));
+				empList.addAll(new EmployeeSrv().Fetch("(emp_email='" + usrName + "')"));
 				if (empList.size() > 0) {
 					employee = empList.get(0);
 					if (employee.getPassword().equals(passWord)) {
-//						session.setAttribute("error", null);
-//						session.setAttribute("access", employee.getAccess());
-//						session.setAttribute("id", employee.getId());
-//						session.setAttribute("no", employee.getNo());
-//						session.setAttribute("name", employee.getName());
-//						session.setAttribute("password", employee.getPassword());
-//						session.setAttribute("address", employee.getAddr());
-//						session.setAttribute("telephone", employee.getTel());
-//						session.setAttribute("email", employee.getEmail());
-//						response.sendRedirect(request.getContextPath()+"/main/main.jsp");
-//						System.out.println(usrName+" "+passWord);
-						String str = (request.getRequestedSessionId()+usrName+usrName.length()).toUpperCase();  
+						// session.setAttribute("error", null);
+						// session.setAttribute("access", employee.getAccess());
+						// session.setAttribute("id", employee.getId());
+						// session.setAttribute("no", employee.getNo());
+						// session.setAttribute("name", employee.getName());
+						// session.setAttribute("password",
+						// employee.getPassword());
+						// session.setAttribute("address", employee.getAddr());
+						// session.setAttribute("telephone", employee.getTel());
+						// session.setAttribute("email", employee.getEmail());
+						// response.sendRedirect(request.getContextPath()+"/main/main.jsp");
+						// System.out.println(usrName+" "+passWord);
+						String str = (session.getId() + usrName + usrName.length()).toUpperCase();
 						System.out.println(str);
-						request.getSession(true);
+						mApp.setSessionid(str);
 						request.setAttribute("session", str);
-						request.setAttribute("data", "{\"data\":\"" + str + "\"}");
+						request.setAttribute("data", "{\"code\":0,\"data\":\"" + str + "\"}");
 						request.getRequestDispatcher("/main/mobile_data.jsp").forward(request, response);
 					} else {
-//						session.setAttribute("error", "用户" + usrName + "密码错误！");
-//						response.sendRedirect("index.jsp");
-						String str = "\"用户" + usrName + "密码错误!\"";  
+						// session.setAttribute("error", "用户" + usrName +
+						// "密码错误！");
+						// response.sendRedirect("index.jsp");
+						String str = "\"登录失败!用户" + usrName + "密码错误!\"";
 						System.out.println(str);
-						request.setAttribute("data", "{\"data\":" + str + "}");
+						request.setAttribute("data", "{\"code\":1,\"data\":" + str + "}");
 						request.getRequestDispatcher("/main/mobile_data.jsp").forward(request, response);
 					}
 				} else {
-//					session.setAttribute("error", "用户" + usrName + "不存在！");
-//					response.sendRedirect("index.jsp");
-					String str = "\"用户" + usrName + "不存在!\"";  
+					// session.setAttribute("error", "用户" + usrName + "不存在！");
+					// response.sendRedirect("index.jsp");
+					String str = "\"登录失败!用户" + usrName + "不存在!\"";
 					System.out.println(str);
-					request.setAttribute("data", "{\"data\":" + str + "}");
+					request.setAttribute("data", "{\"code\":2,\"data\":" + str + "}");
 					request.getRequestDispatcher("/main/mobile_data.jsp").forward(request, response);
 				}
 			} else {
-//				session.setAttribute("error", "数据错误！");
-//				response.sendRedirect("index.jsp");
-				String str = "\"数据错误!\"";  
+				// session.setAttribute("error", "数据错误！");
+				// response.sendRedirect("index.jsp");
+				String str = "\"登录失败!请求数据格式错误!\"";
 				System.out.println(str);
-				request.setAttribute("data", "{\"data\":" + str + "}");
+				request.setAttribute("data", "{\"code\":3,\"data\":" + str + "}");
 				request.getRequestDispatcher("/main/mobile_data.jsp").forward(request, response);
 			}
 		} catch (Exception e) {
-//			session.setAttribute("error", "捕获异常" + e.toString() + "！");
-//			response.sendRedirect("index.jsp");
-			String str = "\"捕获异常" + e.toString() + "!\"";  
+			// session.setAttribute("error", "捕获异常" + e.toString() + "！");
+			// response.sendRedirect("index.jsp");
+			String str = "\"登录失败!捕获异常" + e.toString() + "!\"";
 			System.out.println(str);
-			request.setAttribute("data", "{\"data\":" + str + "}");
+			request.setAttribute("data", "{\"code\":4,\"data\":" + str + "}");
 			request.getRequestDispatcher("/main/mobile_data.jsp").forward(request, response);
 		}
 		out.flush();

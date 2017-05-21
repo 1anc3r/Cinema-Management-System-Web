@@ -177,7 +177,88 @@ public class SaleDAO implements iSaleDAO {
 
 	@Override
 	public List<Sale> select_(Map<String, String> map) {
-		// TODO Auto-generated method stub
-		return null;
+		List<Sale> saleList = null;
+		saleList = new LinkedList<Sale>();
+		String condt = "";
+		if (map.get("id")!= null && !map.get("id").equals("")) {
+			if (condt.equals("")) {
+				condt += " sale_id=" + map.get("id") + "";
+			} else {
+				condt += " and sale_id=" + map.get("id") + "";
+			}
+		}
+		if (map.get("empid")!= null && !map.get("empid").equals("")) {
+			if (condt.equals("")) {
+				condt += " emp_id='" + map.get("empid") + "'";
+			} else {
+				condt += " and emp_id='" + map.get("empid") + "'";
+			}
+		}
+		if (map.get("time")!= null && !map.get("time").equals("")) {
+			if (condt.equals("")) {
+				condt += " sale_time=" + map.get("time");
+			} else {
+				condt += " and sale_time=" + map.get("time");
+			}
+		}
+		if (map.get("payment")!= null && !map.get("payment").equals("")) {
+			if (condt.equals("")) {
+				condt += " sale_payment=" + map.get("payment");
+			} else {
+				condt += " and sale_payment=" + map.get("payment");
+			}
+		}
+		if (map.get("change")!= null && !map.get("change").equals("")) {
+			if (condt.equals("")) {
+				condt += " sale_change='" + map.get("change") + "'";
+			} else {
+				condt += " and sale_change='" + map.get("change") + "'";
+			}
+		}
+		if (map.get("type")!= null && !map.get("type").equals("")) {
+			if (condt.equals("")) {
+				condt += " sale_type=" + map.get("type");
+			} else {
+				condt += " and sale_type=" + map.get("type");
+			}
+		}
+		if (map.get("status")!= null && !map.get("status").equals("")) {
+			if (condt.equals("")) {
+				condt += " sale_status=" + map.get("status");
+			} else {
+				condt += " and sale_status=" + map.get("status");
+			}
+		}
+		try {
+			String sqlstr = "select sale_id, emp_id, sale_time, sale_payment, sale_change, sale_type, sale_status from sale ";
+			condt.trim();
+			if (!condt.isEmpty())
+				sqlstr += " where " + condt;
+			System.out.println(sqlstr);
+			DBUtil db = new DBUtil();
+			if (!db.openConnection()) {
+				return null;
+			}
+			ResultSet rst = db.execQuery(sqlstr);
+			if (rst != null) {
+				while (rst.next()) {
+					Sale sale = new Sale();
+					sale.setId(rst.getInt("sale_id"));
+					sale.setEmpId(rst.getInt("emp_id"));
+					sale.setTime(rst.getTimestamp("sale_time"));
+					sale.setPayment(rst.getFloat("sale_payment"));
+					sale.setChange(rst.getFloat("sale_change"));
+					sale.setType(rst.getInt("sale_type"));
+					sale.setStatus(rst.getInt("sale_status"));
+					saleList.add(sale);
+				}
+			}
+			db.close(rst);
+			db.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+		}
+		return saleList;
 	}
 }

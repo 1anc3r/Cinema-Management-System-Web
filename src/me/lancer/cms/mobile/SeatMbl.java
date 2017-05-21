@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.gson.Gson;
+
 import me.lancer.cms.model.Seat;
 import me.lancer.cms.service.SeatSrv;
 
@@ -28,8 +30,7 @@ public class SeatMbl extends HttpServlet {
 		String method = request.getParameter("method");
 		String session = request.getParameter("session");
 		if (session != null) {
-			session = session.substring(0, session.length() - (session.charAt(session.length() - 1) - '0') - 1);
-			if (request.getRequestedSessionId().equals(session)) {
+			if (mApp.getSessionid(session)) {
 				if ("fetch".equalsIgnoreCase(method)) {
 					doFetch(request, response);
 				} else if ("modify".equalsIgnoreCase(method)) {
@@ -40,13 +41,13 @@ public class SeatMbl extends HttpServlet {
 			} else {
 				String str = "\"session错误!\"";
 				System.out.println(str);
-				request.setAttribute("data", "{\"data\":" + str + "}");
+				request.setAttribute("data", "{\"code\":-1,\"data\":" + str + "}");
 				request.getRequestDispatcher("/main/mobile_data.jsp").forward(request, response);
 			}
 		} else {
 			String str = "\"session错误!\"";
 			System.out.println(str);
-			request.setAttribute("data", "{\"data\":" + str + "}");
+			request.setAttribute("data", "{\"code\":-1,\"data\":" + str + "}");
 			request.getRequestDispatcher("/main/mobile_data.jsp").forward(request, response);
 		}
 	}
@@ -79,12 +80,23 @@ public class SeatMbl extends HttpServlet {
 		}
 		List<Seat> seatList = new SeatSrv().Fetch_(map);
 		if (seatList.size() > 0) {
-			request.setAttribute("error", null);
-			request.setAttribute("list", seatList);
-			request.getRequestDispatcher("/main/seat/seat_fetch.jsp").forward(request, response);
+			// request.setAttribute("error", null);
+			// request.setAttribute("list", studList);
+			// request.getRequestDispatcher("/main/studio/studio_fetch.jsp").forward(request,
+			// response);
+			Gson gson = new Gson();
+			String str = gson.toJson(seatList);
+			System.out.println(request.getRequestedSessionId());
+			request.setAttribute("data", "{\"code\":0,\"data\":" + str + "}");
+			request.getRequestDispatcher("/main/mobile_data.jsp").forward(request, response);
 		} else {
-			request.setAttribute("error", "未找到符合条件的座位!");
-			request.getRequestDispatcher("/main/seat/seat_fetch.jsp").forward(request, response);
+			// request.setAttribute("error", "未找到符合条件的演出厅!");
+			// request.getRequestDispatcher("/main/studio/studio_fetch.jsp").forward(request,
+			// response);
+			String str = "\"未找到符合条件的演出厅!\"";
+			System.out.println(str);
+			request.setAttribute("data", "{\"code\":1,\"data\":" + str + "}");
+			request.getRequestDispatcher("/main/mobile_data.jsp").forward(request, response);
 		}
 	}
 
@@ -128,15 +140,30 @@ public class SeatMbl extends HttpServlet {
 				seat.setSeatStatus(Integer.parseInt(seatStatus));
 			}
 			if (new SeatSrv().modify(seat) == 1) {
-				request.setAttribute("error", "修改成功!");
-				request.getRequestDispatcher("/main/seat/seat_modify.jsp").forward(request, response);
+				// request.setAttribute("error", "修改成功!");
+				// request.getRequestDispatcher("/main/studio/studio_modify.jsp").forward(request,
+				// response);
+				String str = "\"修改成功!\"";
+				System.out.println(str);
+				request.setAttribute("data", "{\"code\":0,\"data\":" + str + "}");
+				request.getRequestDispatcher("/main/mobile_data.jsp").forward(request, response);
 			} else {
-				request.setAttribute("error", "修改失败!请检查数据库状态后再提交修改");
-				request.getRequestDispatcher("/main/seat/seat_modify.jsp").forward(request, response);
+				// request.setAttribute("error", "修改失败!请检查数据库状态后再提交修改");
+				// request.getRequestDispatcher("/main/studio/studio_modify.jsp").forward(request,
+				// response);
+				String str = "\"修改失败!请稍后再提交修改\"";
+				System.out.println(str);
+				request.setAttribute("data", "{\"code\":1,\"data\":" + str + "}");
+				request.getRequestDispatcher("/main/mobile_data.jsp").forward(request, response);
 			}
 		} else {
-			request.setAttribute("error", "修改失败!未找到符合条件的座位");
-			request.getRequestDispatcher("/main/seat/seat_modify.jsp").forward(request, response);
+			// request.setAttribute("error", "修改失败!未找到符合条件的演出厅");
+			// request.getRequestDispatcher("/main/studio/studio_modify.jsp").forward(request,
+			// response);
+			String str = "\"修改失败!未找到符合条件的演出厅\"";
+			System.out.println(str);
+			request.setAttribute("data", "{\"code\":2,\"data\":" + str + "}");
+			request.getRequestDispatcher("/main/mobile_data.jsp").forward(request, response);
 		}
 	}
 

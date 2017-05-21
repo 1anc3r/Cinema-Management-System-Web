@@ -8,6 +8,7 @@ public class Play {
 	private String name;
 	private String introduction;
 	private String image;
+	private String post;
 	private int length;
 	private float price;
 	private int status;
@@ -99,6 +100,14 @@ public class Play {
 
 	public void setStatus(int status) {
 		this.status = status;
+	}
+
+	public String getPost() {
+		return post;
+	}
+
+	public void setPost(String post) {
+		this.post = post;
 	}
 
 }

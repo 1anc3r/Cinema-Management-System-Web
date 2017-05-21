@@ -43,13 +43,13 @@ public class DataDictMbl extends HttpServlet {
 			} else {
 				String str = "\"session错误!\"";
 				System.out.println(str);
-				request.setAttribute("data", "{\"data\":" + str + "}");
+				request.setAttribute("data", "{\"code\":-1,\"data\":" + str + "}");
 				request.getRequestDispatcher("/main/mobile_data.jsp").forward(request, response);
 			}
 		} else {
 			String str = "\"session错误!\"";
 			System.out.println(str);
-			request.setAttribute("data", "{\"data\":" + str + "}");
+			request.setAttribute("data", "{\"code\":-1,\"data\":" + str + "}");
 			request.getRequestDispatcher("/main/mobile_data.jsp").forward(request, response);
 		}
 	}

@@ -15,10 +15,10 @@ public class PlayDAO implements iPlayDAO {
 	@Override
 	public int insert(Play ply) {
 		try {
-			String sqlstr = "insert into play( play_type_id, play_lang_id, play_name, play_introduction, play_image, play_length, play_ticket_price, play_status ) values( "
+			String sqlstr = "insert into play( play_type_id, play_lang_id, play_name, play_introduction, play_image, play_length, play_ticket_price, play_status, play_post ) values( "
 					+ ply.getTypeId() + ", " + ply.getLangId() + ", '" + ply.getName() + "', '" + ply.getIntroduction()
 					+ "', '" + ply.getImage() + "', " + ply.getLength() + ", " + ply.getPrice() + ", " + ply.getStatus()
-					+ " )";
+					 + ", " + ply.getPost() + " )";
 			System.out.println(sqlstr);
 			DBUtil db = new DBUtil();
 			db.openConnection();
@@ -44,7 +44,7 @@ public class PlayDAO implements iPlayDAO {
 					+ ", play_lang_id = " + ply.getLangId() + ", play_name = '" + ply.getName()
 					+ "', play_introduction = '" + ply.getIntroduction() + "', play_image = " + ply.getImage()
 					+ ", play_length = " + ply.getLength() + ", play_ticket_price = " + ply.getPrice()
-					+ ", play_status = " + ply.getStatus();
+					+ ", play_status = " + ply.getStatus() + ", play_post = " + ply.getPost();
 
 			sqlstr += " where play_id = " + ply.getId();
 			DBUtil db = new DBUtil();
@@ -78,7 +78,7 @@ public class PlayDAO implements iPlayDAO {
 		List<Play> plyList = null;
 		plyList = new LinkedList<Play>();
 		try {
-			String sqlstr = "select play_id ,play_type_id, play_lang_id, play_name, play_introduction, play_image, play_length, play_ticket_price, play_status from play ";
+			String sqlstr = "select play_id ,play_type_id, play_lang_id, play_name, play_introduction, play_image, play_length, play_ticket_price, play_status, play_post from play ";
 			condt.trim();
 			if (!condt.isEmpty() && !condt.contains("limit")) {
 				sqlstr += " where " + condt;
@@ -102,6 +102,7 @@ public class PlayDAO implements iPlayDAO {
 					ply.setLength(rst.getInt("play_length"));
 					ply.setPrice(rst.getInt("play_ticket_price"));
 					ply.setStatus(rst.getInt("play_status"));
+					ply.setPost(rst.getString("play_post"));
 					plyList.add(ply);
 				}
 			}
@@ -210,7 +211,7 @@ public class PlayDAO implements iPlayDAO {
 			}
 		}
 		try {
-			String sqlstr = "select play_id ,play_type_id, play_lang_id, play_name, play_introduction, play_image, play_length, play_ticket_price, play_status from play ";
+			String sqlstr = "select play_id ,play_type_id, play_lang_id, play_name, play_introduction, play_image, play_length, play_ticket_price, play_status, play_post from play ";
 			condt.trim();
 			if (!condt.isEmpty())
 				sqlstr += " where " + condt;
@@ -232,6 +233,7 @@ public class PlayDAO implements iPlayDAO {
 					ply.setLength(rst.getInt("play_length"));
 					ply.setPrice(rst.getInt("play_ticket_price"));
 					ply.setStatus(rst.getInt("play_status"));
+					ply.setPost(rst.getString("play_post"));
 					plyList.add(ply);
 				}
 			}

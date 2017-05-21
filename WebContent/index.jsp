@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>欢迎使用1anc3r影院管理系统</title>
+<title>影院管理系统</title>
 <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
 <link rel="stylesheet" type="text/css" href="css/index.css">
 <script type="text/javascript" src='js/index.js'></script>
@@ -21,7 +21,7 @@
 			<p>欢迎使用</p>
 		</div>
 		<div class="mainTitle">
-			<p>1anc3r影院管理系统</p>
+			<p>影院管理系统</p>
 		</div>
 		<div id="buttonBox">
 			<div class="button" name='login'>登录</div>

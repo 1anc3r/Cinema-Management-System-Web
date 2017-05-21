@@ -1,9 +1,11 @@
 package me.lancer.cms.service;
 
 import java.util.List;
+import java.util.Map;
 
 import me.lancer.cms.idao.DAOFactory;
 import me.lancer.cms.idao.iTicketDAO;
+import me.lancer.cms.model.Studio;
 import me.lancer.cms.model.Ticket;
 
 public class TicketSrv {
@@ -36,5 +38,9 @@ public class TicketSrv {
 
 	public int unlockTicket(int ID) {
 		return tciketDAO.unlockTicket(ID);
+	}
+	
+	public List<Ticket> Fetch_(Map<String, String> map) {
+		return tciketDAO.select_(map);
 	}
 }

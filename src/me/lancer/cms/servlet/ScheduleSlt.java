@@ -76,6 +76,7 @@ public class ScheduleSlt extends HttpServlet {
 		String schedPlayId = request.getParameter("playid");
 		String schedTime = request.getParameter("time");
 		String schedPrice = request.getParameter("price");
+		System.out.println("123"+schedId);
 		Map<String, String> map = new HashMap<String, String>();
 		if (schedId != null && schedId.equals("")) {
 			map.put("id", schedId);

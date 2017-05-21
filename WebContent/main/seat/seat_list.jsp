@@ -131,12 +131,12 @@ table.hovertable td {
 								if (seatList.get(id).getSeatStatus() == -1) {
 			%>
 			<td><img
-				src="http://localhost:8080/Cinema-Management-System-Web/img/seat_broken.png" height="10px" width="10px"/></td>
+				src="http://localhost:8080/Cinema-Management-System-Web/img/seat_broken.png" height="48px" width="48px"/></td>
 			<%
 				} else if (seatList.get(id).getSeatStatus() == 1) {
 			%>
 			<td><img
-				src="http://localhost:8080/Cinema-Management-System-Web/img/seat_sale.png" height="10px" width="10px"/></td>
+				src="http://localhost:8080/Cinema-Management-System-Web/img/seat_sale.png" height="48px" width="48px"/></td>
 			<%
 				} else if (seatList.get(id).getSeatStatus() == 0) {
 					%>

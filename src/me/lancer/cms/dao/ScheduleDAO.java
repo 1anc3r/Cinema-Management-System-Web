@@ -116,6 +116,7 @@ public class ScheduleDAO implements iScheduleDAO {
 			} else {
 				condt += " and sched_id=" + map.get("id") + "";
 			}
+			System.out.println(condt);
 		}
 		if (map.get("studid") != null && !map.get("studid").equals("")) {
 			if (condt.equals("")) {

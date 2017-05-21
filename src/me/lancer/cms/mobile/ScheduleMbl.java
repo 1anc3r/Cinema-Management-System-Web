@@ -11,8 +11,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.gson.Gson;
+
 import me.lancer.cms.model.Schedule;
 import me.lancer.cms.service.ScheduleSrv;
+import me.lancer.cms.service.StudioSrv;
 
 public class ScheduleMbl extends HttpServlet {
 
@@ -29,9 +32,9 @@ public class ScheduleMbl extends HttpServlet {
 		response.setCharacterEncoding("utf-8");
 		String method = request.getParameter("method");
 		String session = request.getParameter("session");
+		System.out.println(method);
 		if (session != null) {
-			session = session.substring(0, session.length() - (session.charAt(session.length() - 1) - '0') - 1);
-			if (request.getRequestedSessionId().equals(session)) {
+			if (mApp.getSessionid(session)) {
 				if ("add".equalsIgnoreCase(method)) {
 					doAdd(request, response);
 				} else if ("fetch".equalsIgnoreCase(method)) {
@@ -44,13 +47,13 @@ public class ScheduleMbl extends HttpServlet {
 			} else {
 				String str = "\"session错误!\"";
 				System.out.println(str);
-				request.setAttribute("data", "{\"data\":" + str + "}");
+				request.setAttribute("data", "{\"code\":-1,\"data\":" + str + "}");
 				request.getRequestDispatcher("/main/mobile_data.jsp").forward(request, response);
 			}
 		} else {
 			String str = "\"session错误!\"";
 			System.out.println(str);
-			request.setAttribute("data", "{\"data\":" + str + "}");
+			request.setAttribute("data", "{\"code\":-1,\"data\":" + str + "}");
 			request.getRequestDispatcher("/main/mobile_data.jsp").forward(request, response);
 		}
 	}
@@ -73,15 +76,30 @@ public class ScheduleMbl extends HttpServlet {
 			sched.setTime(Date.valueOf(schedTime));
 			sched.setPrice(Double.parseDouble(schedPrice));
 			if (new ScheduleSrv().add(sched) == 1) {
-				request.setAttribute("error", "添加成功!");
-				request.getRequestDispatcher("/main/schedule/schedule_add.jsp").forward(request, response);
+				// request.setAttribute("error", "添加成功!");
+				// request.getRequestDispatcher("/main/studio/studio_add.jsp").forward(request,
+				// response);
+				String str = "\"添加成功!\"";
+				System.out.println(str);
+				request.setAttribute("data", "{\"code\":0,\"data\":" + str + "}");
+				request.getRequestDispatcher("/main/mobile_data.jsp").forward(request, response);
 			} else {
-				request.setAttribute("error", "添加失败!请检查数据库状态后再提交添加");
-				request.getRequestDispatcher("/main/schedule/schedule_add.jsp").forward(request, response);
+				// request.setAttribute("error", "添加失败!请检查数据库状态后再提交添加");
+				// request.getRequestDispatcher("/main/studio/studio_add.jsp").forward(request,
+				// response);
+				String str = "\"添加失败!请稍后再提交添加\"";
+				System.out.println(str);
+				request.setAttribute("data", "{\"code\":1,\"data\":" + str + "}");
+				request.getRequestDispatcher("/main/mobile_data.jsp").forward(request, response);
 			}
 		} else {
-			request.setAttribute("error", "添加失败!请将信息补充完整后再提交添加");
-			request.getRequestDispatcher("/main/schedule/schedule_add.jsp").forward(request, response);
+			// request.setAttribute("error", "添加失败!请将信息补充完整后再提交添加");
+			// request.getRequestDispatcher("/main/studio/studio_add.jsp").forward(request,
+			// response);
+			String str = "\"添加失败!请将信息补充完整后再提交添加\"";
+			System.out.println(str);
+			request.setAttribute("data", "{\"code\":2,\"data\":" + str + "}");
+			request.getRequestDispatcher("/main/mobile_data.jsp").forward(request, response);
 		}
 	}
 
@@ -109,12 +127,22 @@ public class ScheduleMbl extends HttpServlet {
 		}
 		List<Schedule> schedList = new ScheduleSrv().Fetch_(map);
 		if (schedList.size() > 0) {
-			request.setAttribute("error", null);
-			request.setAttribute("list", schedList);
-			request.getRequestDispatcher("/main/schedule/schedule_fetch.jsp").forward(request, response);
+			// request.setAttribute("error", null);
+			// request.setAttribute("list", studList);
+			// request.getRequestDispatcher("/main/studio/studio_fetch.jsp").forward(request,
+			// response);
+			Gson gson = new Gson();
+			String str = gson.toJson(schedList);
+			request.setAttribute("data", "{\"code\":0,\"data\":" + str + "}");
+			request.getRequestDispatcher("/main/mobile_data.jsp").forward(request, response);
 		} else {
-			request.setAttribute("error", "未找到符合条件的演出计划!");
-			request.getRequestDispatcher("/main/schedule/schedule_fetch.jsp").forward(request, response);
+			// request.setAttribute("error", "未找到符合条件的演出厅!");
+			// request.getRequestDispatcher("/main/studio/studio_fetch.jsp").forward(request,
+			// response);
+			String str = "\"未找到符合条件的演出厅!\"";
+			System.out.println(str);
+			request.setAttribute("data", "{\"code\":1,\"data\":" + str + "}");
+			request.getRequestDispatcher("/main/mobile_data.jsp").forward(request, response);
 		}
 	}
 
@@ -145,15 +173,30 @@ public class ScheduleMbl extends HttpServlet {
 				sched.setPrice(Double.parseDouble(schedPrice));
 			}
 			if (new ScheduleSrv().modify(sched) == 1) {
-				request.setAttribute("error", "修改成功!");
-				request.getRequestDispatcher("/main/schedule/schedule_modify.jsp").forward(request, response);
+				// request.setAttribute("error", "修改成功!");
+				// request.getRequestDispatcher("/main/studio/studio_modify.jsp").forward(request,
+				// response);
+				String str = "\"修改成功!\"";
+				System.out.println(str);
+				request.setAttribute("data", "{\"code\":0,\"data\":" + str + "}");
+				request.getRequestDispatcher("/main/mobile_data.jsp").forward(request, response);
 			} else {
-				request.setAttribute("error", "修改失败!请检查数据库状态后再提交修改");
-				request.getRequestDispatcher("/main/schedule/schedule_modify.jsp").forward(request, response);
+				// request.setAttribute("error", "修改失败!请检查数据库状态后再提交修改");
+				// request.getRequestDispatcher("/main/studio/studio_modify.jsp").forward(request,
+				// response);
+				String str = "\"修改失败!请稍后再提交修改\"";
+				System.out.println(str);
+				request.setAttribute("data", "{\"code\":1,\"data\":" + str + "}");
+				request.getRequestDispatcher("/main/mobile_data.jsp").forward(request, response);
 			}
 		} else {
-			request.setAttribute("error", "修改失败!未找到符合条件的演出计划");
-			request.getRequestDispatcher("/main/schedule/schedule_modify.jsp").forward(request, response);
+			// request.setAttribute("error", "修改失败!未找到符合条件的演出厅");
+			// request.getRequestDispatcher("/main/studio/studio_modify.jsp").forward(request,
+			// response);
+			String str = "\"修改失败!未找到符合条件的演出厅\"";
+			System.out.println(str);
+			request.setAttribute("data", "{\"code\":2,\"data\":" + str + "}");
+			request.getRequestDispatcher("/main/mobile_data.jsp").forward(request, response);
 		}
 	}
 
@@ -166,15 +209,30 @@ public class ScheduleMbl extends HttpServlet {
 		if (rst.size() > 0) {
 			sched = rst.get(0);
 			if (new ScheduleSrv().delete(Integer.parseInt(schedId)) == 1) {
-				request.setAttribute("error", "删除成功!");
-				request.getRequestDispatcher("/main/schedule/schedule_delete.jsp").forward(request, response);
+				// request.setAttribute("error", "删除成功!");
+				// request.getRequestDispatcher("/main/studio/studio_delete.jsp").forward(request,
+				// response);
+				String str = "\"删除成功!\"";
+				System.out.println(str);
+				request.setAttribute("data", "{\"code\":0,\"data\":" + str + "}");
+				request.getRequestDispatcher("/main/mobile_data.jsp").forward(request, response);
 			} else {
-				request.setAttribute("error", "删除失败!请检查数据库状态后再提交删除");
-				request.getRequestDispatcher("/main/schedule/schedule_delete.jsp").forward(request, response);
+				// request.setAttribute("error", "删除失败!请检查数据库状态后再提交删除");
+				// request.getRequestDispatcher("/main/studio/studio_delete.jsp").forward(request,
+				// response);
+				String str = "\"删除失败!请稍后再提交删除\"";
+				System.out.println(str);
+				request.setAttribute("data", "{\"code\":1,\"data\":" + str + "}");
+				request.getRequestDispatcher("/main/mobile_data.jsp").forward(request, response);
 			}
 		} else {
-			request.setAttribute("error", "删除失败!未找到符合条件的演出厅");
-			request.getRequestDispatcher("/main/schedule/schedule_delete.jsp").forward(request, response);
+			// request.setAttribute("error", "删除失败!未找到符合条件的演出厅");
+			// request.getRequestDispatcher("/main/studio/studio_delete.jsp").forward(request,
+			// response);
+			String str = "\"删除失败!未找到符合条件的演出厅\"";
+			System.out.println(str);
+			request.setAttribute("data", "{\"code\":2,\"data\":" + str + "}");
+			request.getRequestDispatcher("/main/mobile_data.jsp").forward(request, response);
 		}
 	}
 

@@ -114,6 +114,14 @@
     <url-pattern>/login</url-pattern>
   </servlet-mapping>
   <servlet>
+    <servlet-name>register</servlet-name>
+    <servlet-class>me.lancer.cms.mobile.RegisterMbl</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>register</servlet-name>
+    <url-pattern>/register</url-pattern>
+  </servlet-mapping>
+  <servlet>
     <servlet-name>employee</servlet-name>
     <servlet-class>me.lancer.cms.mobile.EmployeeMbl</servlet-class>
   </servlet>
@@ -154,12 +162,28 @@
     <url-pattern>/schedule</url-pattern>
   </servlet-mapping>
   <servlet>
+    <servlet-name>saleItem</servlet-name>
+    <servlet-class>me.lancer.cms.mobile.SaleItemMbl</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>saleItem</servlet-name>
+    <url-pattern>/saleItem</url-pattern>
+  </servlet-mapping>
+  <servlet>
     <servlet-name>sale</servlet-name>
     <servlet-class>me.lancer.cms.mobile.SaleMbl</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>sale</servlet-name>
     <url-pattern>/sale</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>ticket</servlet-name>
+    <servlet-class>me.lancer.cms.mobile.TicketMbl</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ticket</servlet-name>
+    <url-pattern>/ticket</url-pattern>
   </servlet-mapping>
   <servlet>
     <servlet-name>dictionary</servlet-name>

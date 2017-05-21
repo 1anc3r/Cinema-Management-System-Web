@@ -77,8 +77,8 @@ table.hovertable td {
 		%>
 		<tr onmouseover="this.style.backgroundColor='#ffff66';"
 			onmouseout="this.style.backgroundColor='#d4e3e5';" width=100%>
-			<td><img src="<%=playList.get(i).getImage()%>" width="20px"
-				height="20px"></td>
+			<td><img src="<%=playList.get(i).getImage()%>" width="120px"
+				height="160px"></td>
 			<td><%=playList.get(i).getId()%></td>
 			<td><%=playList.get(i).getTypeId()%></td>
 			<td><%=playList.get(i).getLangId()%></td>

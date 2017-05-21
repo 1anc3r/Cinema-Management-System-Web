@@ -15,6 +15,8 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
+import com.google.gson.Gson;
+
 import me.lancer.cms.model.Employee;
 import me.lancer.cms.service.EmployeeSrv;
 
@@ -33,8 +35,7 @@ public class EmployeeMbl extends HttpServlet {
 		String method = request.getParameter("method");
 		String session = request.getParameter("session");
 		if (session != null) {
-			session = session.substring(0, session.length() - (session.charAt(session.length() - 1) - '0') - 1);
-			if (request.getRequestedSessionId().equals(session)) {
+			if (mApp.getSessionid(session)) {
 				if ("add".equalsIgnoreCase(method)) {
 					doAdd(request, response);
 				} else if ("fetch".equalsIgnoreCase(method)) {
@@ -47,13 +48,13 @@ public class EmployeeMbl extends HttpServlet {
 			} else {
 				String str = "\"session错误!\"";
 				System.out.println(str);
-				request.setAttribute("data", "{\"data\":" + str + "}");
+				request.setAttribute("data", "{\"code\":-1,\"data\":" + str + "}");
 				request.getRequestDispatcher("/main/mobile_data.jsp").forward(request, response);
 			}
 		} else {
 			String str = "\"session错误!\"";
 			System.out.println(str);
-			request.setAttribute("data", "{\"data\":" + str + "}");
+			request.setAttribute("data", "{\"code\":-1,\"data\":" + str + "}");
 			request.getRequestDispatcher("/main/mobile_data.jsp").forward(request, response);
 		}
 	}
@@ -63,78 +64,48 @@ public class EmployeeMbl extends HttpServlet {
 	}
 
 	public void doAdd(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-//		String empAccess = request.getParameter("access");
-//		String empNo = request.getParameter("number");
-//		String empName = request.getParameter("name");
-//		String empAddr = request.getParameter("address");
-//		String empTel = request.getParameter("tel");
-//		String empEmail = request.getParameter("email");
-//		if (empAccess.length() > 0 && empNo.length() > 0 && empName.length() > 0 && empAddr.length() > 0
-//				&& empTel.length() > 0 && empEmail.length() > 0) {
-//			Employee emp = new Employee();
-//			emp.setNo(Integer.parseInt(empNo));
-//			emp.setName(empName);
-//			emp.setAddr(empAddr);
-//			emp.setTel(empTel);
-//			emp.setEmail(empEmail);
-//			if (new EmployeeSrv().add(emp) == 1) {
-//				request.setAttribute("error", "添加成功!");
-//				request.getRequestDispatcher("/main/employee/employee_add.jsp").forward(request, response);
-//			} else {
-//				request.setAttribute("error", "添加失败!请检查数据库状态后再提交添加");
-//				request.getRequestDispatcher("/main/employee/employee_add.jsp").forward(request, response);
-//			}
-//		} else {
-//			request.setAttribute("error", "添加失败!请将信息补充完整后再提交添加");
-//			request.getRequestDispatcher("/main/employee/employee_add.jsp").forward(request, response);
-//		}
-		String paramName = "", paramValue = "";
-		Employee emp = new Employee();
-		DiskFileItemFactory dff = new DiskFileItemFactory();
-		dff.setSizeThreshold(1024000);
-		ServletFileUpload sfu = new ServletFileUpload(dff);
-		sfu.setFileSizeMax(1024 * 1024 * 2);
-		try {
-			List<FileItem> uploaditems = sfu.parseRequest(request);
-			for (FileItem fileItem : uploaditems) {
-				paramName = fileItem.getFieldName();
-				System.out.print(paramName + ":");
-				if (fileItem.isFormField()) {
-					paramValue = new String(fileItem.getString().getBytes("ISO-8859-1"), "UTF-8");
-					System.out.println(paramValue);
-					if ("access".equals(paramName))
-						emp.setAccess(Integer.parseInt(paramValue));
-					if ("number".equals(paramName))
-						emp.setNo(Integer.parseInt(paramValue));
-					if ("name".equals(paramName))
-						emp.setName(paramValue);
-					if ("address".equals(paramName))
-						emp.setAddr(paramValue);
-					if ("tel".equals(paramName))
-						emp.setTel(paramValue);
-					if ("email".equals(paramName))
-						emp.setEmail(paramValue);
-					emp.setPassword("123456");
-				} else {
-					Long size = fileItem.getSize();
-					String fileName = fileItem.getName();
-					fileName = fileName.substring(fileName.lastIndexOf("\\") + 1);
-					System.out.println("\n文件名：" + fileName + "\t大小：" + size + "byte\n"+"http://localhost:8080/Cinema-Management-System-Web/" + fileName);
-					File file = new File(getServletContext().getRealPath("/") + fileName);
-					fileItem.write(file);
-					emp.setImage("http://localhost:8080/Cinema-Management-System-Web/" + fileName);
-				}
-			}
+		String empAccess = request.getParameter("access");
+		String empNo = request.getParameter("number");
+		String empName = request.getParameter("name");
+		String empAddr = request.getParameter("address");
+		String empTel = request.getParameter("tel");
+		String empEmail = request.getParameter("email");
+		String empPassword = request.getParameter("password");
+		if (empAccess.length() > 0 && empNo.length() > 0 && empName.length() > 0 && empAddr.length() > 0
+				&& empTel.length() > 0 && empEmail.length() > 0) {
+			Employee emp = new Employee();
+			emp.setNo(Integer.parseInt(empNo));
+			emp.setName(empName);
+			emp.setAddr(empAddr);
+			emp.setTel(empTel);
+			emp.setEmail(empEmail);
+			emp.setPassword(empPassword);
 			if (new EmployeeSrv().add(emp) == 1) {
-				System.out.println("添加成功!");
+				// request.setAttribute("error", "添加成功!");
+				// request.getRequestDispatcher("/main/studio/studio_add.jsp").forward(request,
+				// response);
+				String str = "\"添加成功!\"";
+				System.out.println(str);
+				request.setAttribute("data", "{\"code\":0,\"data\":" + str + "}");
+				request.getRequestDispatcher("/main/mobile_data.jsp").forward(request, response);
 			} else {
-				System.out.println("添加失败!请检查数据库状态后再提交添加");
+				// request.setAttribute("error", "添加失败!请检查数据库状态后再提交添加");
+				// request.getRequestDispatcher("/main/studio/studio_add.jsp").forward(request,
+				// response);
+				String str = "\"添加失败!请稍后再提交添加\"";
+				System.out.println(str);
+				request.setAttribute("data", "{\"code\":1,\"data\":" + str + "}");
+				request.getRequestDispatcher("/main/mobile_data.jsp").forward(request, response);
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
+		} else {
+			// request.setAttribute("error", "添加失败!请将信息补充完整后再提交添加");
+			// request.getRequestDispatcher("/main/studio/studio_add.jsp").forward(request,
+			// response);
+			String str = "\"添加失败!请将信息补充完整后再提交添加\"";
+			System.out.println(str);
+			request.setAttribute("data", "{\"code\":2,\"data\":" + str + "}");
+			request.getRequestDispatcher("/main/mobile_data.jsp").forward(request, response);
 		}
-		request.setAttribute("error", "添加成功!");
-		request.getRequestDispatcher("/main/employee/employee_list.jsp").forward(request, response);
 	}
 
 	public void doFetch(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -170,12 +141,23 @@ public class EmployeeMbl extends HttpServlet {
 		}
 		List<Employee> empList = new EmployeeSrv().Fetch_(map);
 		if (empList.size() > 0) {
-			request.setAttribute("error", null);
-			request.setAttribute("list", empList);
-			request.getRequestDispatcher("/main/employee/employee_fetch.jsp").forward(request, response);
+			// request.setAttribute("error", null);
+			// request.setAttribute("list", studList);
+			// request.getRequestDispatcher("/main/studio/studio_fetch.jsp").forward(request,
+			// response);
+			Gson gson = new Gson();
+			String str = gson.toJson(empList);
+			System.out.println(request.getRequestedSessionId());
+			request.setAttribute("data", "{\"code\":0,\"data\":" + str + "}");
+			request.getRequestDispatcher("/main/mobile_data.jsp").forward(request, response);
 		} else {
-			request.setAttribute("error", "未找到符合条件的员工!");
-			request.getRequestDispatcher("/main/employee/employee_fetch.jsp").forward(request, response);
+			// request.setAttribute("error", "未找到符合条件的演出厅!");
+			// request.getRequestDispatcher("/main/studio/studio_fetch.jsp").forward(request,
+			// response);
+			String str = "\"未找到符合条件的演出厅!\"";
+			System.out.println(str);
+			request.setAttribute("data", "{\"code\":1,\"data\":" + str + "}");
+			request.getRequestDispatcher("/main/mobile_data.jsp").forward(request, response);
 		}
 	}
 
@@ -214,15 +196,30 @@ public class EmployeeMbl extends HttpServlet {
 				emp.setEmail(empEmail);
 			}
 			if (new EmployeeSrv().modify(emp) == 1) {
-				request.setAttribute("error", "修改成功!");
-				request.getRequestDispatcher("/main/employee/employee_modify.jsp").forward(request, response);
+				// request.setAttribute("error", "修改成功!");
+				// request.getRequestDispatcher("/main/studio/studio_modify.jsp").forward(request,
+				// response);
+				String str = "\"修改成功!\"";
+				System.out.println(str);
+				request.setAttribute("data", "{\"code\":0,\"data\":" + str + "}");
+				request.getRequestDispatcher("/main/mobile_data.jsp").forward(request, response);
 			} else {
-				request.setAttribute("error", "修改失败!请检查数据库状态后再提交修改");
-				request.getRequestDispatcher("/main/employee/employee_modify.jsp").forward(request, response);
+				// request.setAttribute("error", "修改失败!请检查数据库状态后再提交修改");
+				// request.getRequestDispatcher("/main/studio/studio_modify.jsp").forward(request,
+				// response);
+				String str = "\"修改失败!请稍后再提交修改\"";
+				System.out.println(str);
+				request.setAttribute("data", "{\"code\":1,\"data\":" + str + "}");
+				request.getRequestDispatcher("/main/mobile_data.jsp").forward(request, response);
 			}
 		} else {
-			request.setAttribute("error", "修改失败!未找到符合条件的演出厅");
-			request.getRequestDispatcher("/main/employee/employee_modify.jsp").forward(request, response);
+			// request.setAttribute("error", "修改失败!未找到符合条件的演出厅");
+			// request.getRequestDispatcher("/main/studio/studio_modify.jsp").forward(request,
+			// response);
+			String str = "\"修改失败!未找到符合条件的演出厅\"";
+			System.out.println(str);
+			request.setAttribute("data", "{\"code\":2,\"data\":" + str + "}");
+			request.getRequestDispatcher("/main/mobile_data.jsp").forward(request, response);
 		}
 	}
 
@@ -237,15 +234,30 @@ public class EmployeeMbl extends HttpServlet {
 		if (rst.size() > 0) {
 			emp = rst.get(0);
 			if (new EmployeeSrv().delete(Integer.parseInt(empId)) == 1) {
-				request.setAttribute("error", "删除成功!");
-				request.getRequestDispatcher("/main/employee/employee_delete.jsp").forward(request, response);
+				// request.setAttribute("error", "删除成功!");
+				// request.getRequestDispatcher("/main/studio/studio_delete.jsp").forward(request,
+				// response);
+				String str = "\"删除成功!\"";
+				System.out.println(str);
+				request.setAttribute("data", "{\"code\":0,\"data\":" + str + "}");
+				request.getRequestDispatcher("/main/mobile_data.jsp").forward(request, response);
 			} else {
-				request.setAttribute("error", "删除失败!请检查数据库状态后再提交删除");
-				request.getRequestDispatcher("/main/employee/employee_delete.jsp").forward(request, response);
+				// request.setAttribute("error", "删除失败!请检查数据库状态后再提交删除");
+				// request.getRequestDispatcher("/main/studio/studio_delete.jsp").forward(request,
+				// response);
+				String str = "\"删除失败!请稍后再提交删除\"";
+				System.out.println(str);
+				request.setAttribute("data", "{\"code\":1,\"data\":" + str + "}");
+				request.getRequestDispatcher("/main/mobile_data.jsp").forward(request, response);
 			}
 		} else {
-			request.setAttribute("error", "删除失败!未找到符合条件的员工");
-			request.getRequestDispatcher("/main/employee/employee_delete.jsp").forward(request, response);
+			// request.setAttribute("error", "删除失败!未找到符合条件的演出厅");
+			// request.getRequestDispatcher("/main/studio/studio_delete.jsp").forward(request,
+			// response);
+			String str = "\"删除失败!未找到符合条件的演出厅\"";
+			System.out.println(str);
+			request.setAttribute("data", "{\"code\":2,\"data\":" + str + "}");
+			request.getRequestDispatcher("/main/mobile_data.jsp").forward(request, response);
 		}
 	}
 

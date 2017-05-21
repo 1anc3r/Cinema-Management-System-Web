@@ -19,7 +19,7 @@
 <title>导航栏</title>
 </head>
 <body style="background-color:#03A8F3" align="center">
-<h1 align="center"><font color="#FEFEFE">1anc3r影院管理系统主页</font></h3>
+<h1 align="center"><font color="#FEFEFE">影院管理系统主页</font></h3>
 <ul id="menu" align="center">
   <li><a href="studio/studio_main.jsp" target="frame_bottom"><font color="#FEFEFE">影厅管理</font></a></li>
   <li><a href="seat/seat_main.jsp" target="frame_bottom"><font color="#FEFEFE">座位管理</font></a></li>

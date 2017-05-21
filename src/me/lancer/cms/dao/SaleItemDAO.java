@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import me.lancer.cms.idao.iSaleItemDAO;
+import me.lancer.cms.model.Sale;
 import me.lancer.cms.model.SaleItem;
 import me.lancer.cms.util.DBUtil;
 
@@ -101,7 +102,64 @@ public class SaleItemDAO implements iSaleItemDAO {
 
 	@Override
 	public List<SaleItem> select_(Map<String, String> map) {
-		// TODO Auto-generated method stub
-		return null;
+		List<SaleItem> saleItemList = null;
+		saleItemList = new LinkedList<SaleItem>();
+		String condt = "";
+		if (map.get("id")!= null && !map.get("id").equals("")) {
+			if (condt.equals("")) {
+				condt += " sale_item_id=" + map.get("id") + "";
+			} else {
+				condt += " and sale_item_id=" + map.get("id") + "";
+			}
+		}
+		if (map.get("tickid")!= null && !map.get("tickid").equals("")) {
+			if (condt.equals("")) {
+				condt += " ticket_id='" + map.get("ticketid") + "'";
+			} else {
+				condt += " and ticket_id='" + map.get("ticketid") + "'";
+			}
+		}
+		if (map.get("saleid")!= null && !map.get("saleid").equals("")) {
+			if (condt.equals("")) {
+				condt += " sale_ID=" + map.get("saleid");
+			} else {
+				condt += " and sale_ID=" + map.get("saleid");
+			}
+		}
+		if (map.get("price")!= null && !map.get("price").equals("")) {
+			if (condt.equals("")) {
+				condt += " sale_item_price=" + map.get("price");
+			} else {
+				condt += " and sale_item_price=" + map.get("price");
+			}
+		}
+		try {
+			String sqlstr = "select sale_item_id, ticket_id, sale_ID, sale_item_price from sale_item ";
+			condt.trim();
+			if (!condt.isEmpty())
+				sqlstr += " where " + condt;
+			System.out.println(sqlstr);
+			DBUtil db = new DBUtil();
+			if (!db.openConnection()) {
+				return null;
+			}
+			ResultSet rst = db.execQuery(sqlstr);
+			if (rst != null) {
+				while (rst.next()) {
+					SaleItem sale_item = new SaleItem();
+					sale_item.setId(rst.getInt("sale_item_id"));
+					sale_item.setTicketId(rst.getInt("ticket_id"));
+					sale_item.setSaleId(rst.getInt("sale_ID"));
+					sale_item.setPrice(rst.getInt("sale_item_price"));
+					saleItemList.add(sale_item);
+				}
+			}
+			db.close(rst);
+			db.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+		}
+		return saleItemList;
 	}
 }
