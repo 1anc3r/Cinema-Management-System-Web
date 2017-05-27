@@ -1,6 +1,6 @@
 # Cinema-Management-System-Web
 ## 简介
-大三上期 JavaWeb 课程设计——影院管理系统 Java Web 版.
+大三上期 Java Web 课程设计——影院管理系统 Java Web 版.
 
 [项目链接](http://111.231.1.112/CinemaManagementSystem)
 
