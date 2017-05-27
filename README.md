@@ -5,7 +5,7 @@
 [项目链接](http://111.231.1.112/CinemaManagementSystem)
 
 ## 技术
-1. JavaWeb.
+1. Java Web.
 2. MySQL.
 3. MVC.
 
